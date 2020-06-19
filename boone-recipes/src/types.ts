@@ -21,7 +21,7 @@ export interface Recipe {
 }
 
 export interface RecipeList {
-    name: string;
+    title: string;
     recipes: Recipe[];
 }
 
@@ -31,4 +31,8 @@ export interface User {
     name: string;
     lists: RecipeList[];
     friends: User[];
+}
+
+export interface NewUser extends User {
+    password: string
 }

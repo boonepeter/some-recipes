@@ -1,9 +1,7 @@
 import React from 'react';
-import { Button, Navbar, Nav, Container } from 'react-bootstrap';
+import { CardColumns } from 'react-bootstrap';
 import { Recipe } from '../types';
-import RecipeView from './RecipeView'
 import Preview from './Preview'
-import { useParams } from 'react-router-dom';
 
 const RecipeList: React.FC<{ recipes: Recipe[] | null }> = ({ recipes }) => {
   if (!recipes) {
@@ -14,11 +12,11 @@ const RecipeList: React.FC<{ recipes: Recipe[] | null }> = ({ recipes }) => {
       )
   }
   return (
-      <div>
+    <CardColumns>
         {recipes.map((r: Recipe) => (
             <Preview key={r.id} recipe={r}/>
         ))}
-      </div>
+    </CardColumns>
   )
 }
 

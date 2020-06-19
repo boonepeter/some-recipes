@@ -1,8 +1,9 @@
 import React from 'react';
 import { Recipe } from '../types';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
+import { Badge } from 'react-bootstrap';
 
 const RecipeView: React.FC = () => {
   const { id } = useParams<{id: string}>();
@@ -17,7 +18,7 @@ const RecipeView: React.FC = () => {
       }
     };
     getRecipe();
-  }, []);
+  }, [id]);
 
   if (!recipe) {
     return null;
@@ -35,7 +36,17 @@ const RecipeView: React.FC = () => {
         : null}
       
       </h2>
-
+      {
+        recipe.tags ? 
+        <div>
+          Tags:
+          { recipe.tags.map(t =>
+            <Badge className="ml-10" style={{margin: 5}} variant="light" key={t}>
+              <Link to={`/search?type=tag&terms=${t}`}>{t}</Link>
+              </Badge>)}
+        </div>
+        : null  
+      }
       <div>
         {recipe.description}
       </div>
