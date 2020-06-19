@@ -1,20 +1,8 @@
 {
-  "name": "boone-recipe-backend",
+  "name": "boone-recipes-backend",
   "version": "0.1.0",
-  "description": "backend for boone-recipes",
-  "main": "src/index.ts",
-  "type": "module",
-  "scripts": {
-    "tsc": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev src/index.ts",
-    "lint": "eslint --ext .ts .",
-    "start": "node build/index.js",
-    "build": "tsc",
-    "postinstall": "npm run build"
-  },
-  "author": "Peter Boone",
-  "license": "ISC",
+  "description": "The backend to boone-recipes site.",
+  "main": "index.js",
   "devDependencies": {
     "@types/cors": "^2.8.6",
     "@types/dotenv": "^8.2.0",
@@ -26,20 +14,32 @@
     "eslint": "^6.8.0",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.8.3"
+   },
+   "dependencies": {
+      "@std/esm": "^0.26.0",
+      "@types/bcrypt": "^3.0.0",
+      "@types/bcryptjs": "^2.4.2",
+      "@types/jsonwebtoken": "^8.5.0",
+      "@types/mongoose-unique-validator": "^1.0.4",
+      "bcrypt": "^4.0.1",
+      "bcryptjs": "^2.4.3",
+      "cors": "^2.8.5",
+      "express": "^4.17.1",
+      "express-async-errors": "^3.1.1",
+      "jsonwebtoken": "^8.5.1",
+      "mongoose": "^5.9.16",
+      "mongoose-unique-validator": "^2.0.3",
+      "uuid": "^8.0.0"
+   },
+  "scripts": {
+    "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node-dev src/index.ts",
+    "lint": "eslint --ext .ts .",
+    "start": "node build/index.js",
+    "build": "tsc",
+    "postinstall": "npm run build"
   },
-  "dependencies": {
-    "@types/bcrypt": "^3.0.0",
-    "@types/bcryptjs": "^2.4.2",
-    "@types/jsonwebtoken": "^8.5.0",
-    "@types/mongoose-unique-validator": "^1.0.4",
-    "bcrypt": "^4.0.1",
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "express-async-errors": "^3.1.1",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.16",
-    "mongoose-unique-validator": "^2.0.3",
-    "uuid": "^8.0.0"
-  }
+  "author": "Peter Boone",
+  "license": "MIT"
 }
