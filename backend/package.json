@@ -35,7 +35,9 @@
   "scripts": {
     "tsc": "tsc",
     "deploy": "cd ..&git add .& git commit -m 'deploy'&git subtree push --prefix backend heroku master",
+    "deploy:full": "npm run build:ui && npm run deploy",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "cd ../boone-recipes && npm run build --prod",
     "dev": "ts-node-dev src/index.ts",
     "lint": "eslint --ext .ts .",
     "start": "node build/index.js",
