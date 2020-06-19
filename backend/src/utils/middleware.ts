@@ -1,6 +1,6 @@
-const logger = require('./logger')
+import logger from './logger'
 
-const requestLogger = (request, response, next) => {
+const requestLogger = (request: any, _response: any, next: any) => {
   logger.info('Method:', request.method)
   logger.info('Path:', request.path)
   logger.info('Body:', request.body)
@@ -8,11 +8,11 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
-const unknownEndpoint = (request, response) => {
+const unknownEndpoint = (_request: any, response: any) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error: any, _request: any, response: any, next: any) => {
   logger.error(error.message)
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
@@ -27,7 +27,7 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-const tokenExtractor = (request, response, next) => {
+const tokenExtractor = (request: any, _response: any, next: any) => {
   const authorization = request.get('authorization')
   if (authorization && authorization.toLowerCase().startsWith('bearer')) {
     request.token = authorization.substring(7)

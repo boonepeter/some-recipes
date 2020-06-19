@@ -32,3 +32,7 @@ export interface User {
     lists: RecipeList[];
     friends: User[];
 }
+
+export interface UserWithHash extends User {
+    passwordHash: string;
+}

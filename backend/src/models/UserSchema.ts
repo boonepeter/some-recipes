@@ -1,45 +1,52 @@
-import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
+import {Document, model, Model, Schema} from 'mongoose';
+import { RecipeList } from '../types';
 
-
-const userSchema = new mongoose.Schema({
-    username: {
-      type: String,
-      minlength: 3,
-      unique: true,
-      required: true
-    },
-    email: {
-      type: String,
-      unique: true,
-      required: true
-    },
-    name: {
-      type: String,
-      required: true
-    },
-    passwordHash: {
-      type: String,
-      required: true 
-    },
-    lists: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'RecipeList'
-      }
-    ],
-  })
-  
-  userSchema.plugin(uniqueValidator)
-  userSchema.set('toJSON', {
-    transform: (_document, returnedObject) => {
-      returnedObject.id = returnedObject._id.toString()
-      delete returnedObject._id
-      delete returnedObject.__v
-      delete returnedObject.passwordHash
+const UserSchema: Schema = new Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  passwordHash: {
+    type: String,
+    required: true 
+  },
+  lists: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'RecipeList'
     }
-  })
+  ]
+});
+
+interface IUser extends Document {
+  username: string;
+  email: string,
+  name: string,
+  passwordHash: string;
+  lists: RecipeList[];
+}
+
+UserSchema.plugin(uniqueValidator)
+UserSchema.set('toJSON', {
+  transform: (_document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+    delete returnedObject.passwordHash
+  }
+})
 
 
-  const User = mongoose.model('User', userSchema)
-  export default User
+const UserModel: Model<IUser> = model<IUser>('User', UserSchema);
+export default UserModel;
