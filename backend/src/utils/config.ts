@@ -1,7 +1,8 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+import { config } from 'dotenv';
 
-let PORT = process.env.PORT;
+config();
+
+let PORT = process.env.PORT || 3001;
 let MONGODB_URI = process.env.MONGODB_URI
 
 console.log('mongo uri', MONGODB_URI);

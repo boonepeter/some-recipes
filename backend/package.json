@@ -34,6 +34,7 @@
   },
   "scripts": {
     "tsc": "tsc",
+    "deploy": "cd ..&git add .& git commit -m 'deploy'&git subtree push --prefix backend heroku master",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev src/index.ts",
     "lint": "eslint --ext .ts .",
