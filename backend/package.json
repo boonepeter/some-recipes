@@ -1,8 +1,9 @@
 {
-  "name": "patientor-backend",
+  "name": "boone-recipe-backend",
   "version": "0.1.0",
-  "description": "backend for patientor",
-  "main": "index.js",
+  "description": "backend for boone-recipes",
+  "main": "src/index.ts",
+  "type": "module",
   "scripts": {
     "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
