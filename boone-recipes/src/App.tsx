@@ -3,7 +3,7 @@ import axios from 'axios';
 import { apiBaseUrl } from './constants'
 import {
   BrowserRouter as Router,
-  Switch, Route, useHistory
+  Switch, Route
 } from 'react-router-dom';
 
 import RecipeView from './components/RecipeView'
@@ -15,35 +15,42 @@ import SearchView from './components/SearchView';
 import ProfileView from './components/ProfileView';
 import NewRecipe from './components/NewRecipe';
 import { User } from './types';
-import { Modal, Button } from 'react-bootstrap';
+import { Jumbotron, Button } from 'react-bootstrap';
 
 const App: React.FC = () => {
   const [ recipeList, setRecipeList ] = useState(null)
   const [ user, setUser ] = useState<User|null>(null);
-  const [ showNewRecipe, setShowNewRecipe ] = useState(false);
-  let history = useHistory();
-
   const [ show, setShow ] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const grabUser = async (username: string) => {
+    const response = await axios.get(`${apiBaseUrl}/users/${username}`);
+    setUser(response.data)
+  }
+
   React.useEffect(() => {
     const token = localStorage.getItem('some-recipes-user-token');
     if (token) {
-      setUser(JSON.parse(token).user);
-      console.log('parsed', JSON.parse(token));
+      const parsedUser: User|null = JSON.parse(token).user;
+      if (parsedUser) {
+        grabUser(parsedUser.username);
+      }
     }
   }, [])
 
   const logout = () => {
     localStorage.clear();
-    history?.push('/');
+    setUser(null);
+  }
+
+  const appLogin = (user: User|null) => {
+    setUser(user);
   }
 
   React.useEffect(() => {
     const getRecipes = async () => {
       const data = await axios.get(`${apiBaseUrl}/recipes`)
-      console.log(data)
       setRecipeList(data.data);
     }
     getRecipes();
@@ -52,31 +59,49 @@ const App: React.FC = () => {
   return (
     <div>
       <Router>
-        <NavigationBar user={user} logout={logout} showNewModal={handleShow} />
-        <div className="container">
+        <NavigationBar user={user} logout={logout} showNewModal={handleShow}  />
+        <div className="container" style={{ marginTop: "20px"}}>
         <Switch>
-          <Route path="/recipes/:id" render={() => <RecipeView />} />
+          <Route path="/recipes/:id"> 
+            <RecipeView loggedInUser={user} />
+          </Route>
+
           <Route path="/recipes">
             <RecipeList recipes={recipeList}/>
           </Route>
           <Route path="/login">
-            <LoginForm />
+            <LoginForm appLogin={appLogin}/>
           </Route>
           <Route path="/signup">
-            <SignUpForm />
+            <SignUpForm appLogin={appLogin} />
           </Route>
           <Route path="/search">
             <SearchView />
           </Route>
           <Route path="/profile/:username">
-            <ProfileView />
+            <ProfileView loggedInUser={user}/>
           </Route>
           <Route path="/">
-            <h1>Home</h1>
-            <Button onClick={() => setShow(true)}>Show modal</Button>
-            <NewRecipe show={show} handleClose={handleClose} handleShow={handleShow} />
+            <Jumbotron >
+              <h2>Hate scrolling through blog posts to find a recipe?</h2>
+              <p/>
+              <p>
+                Me too. Try out this simple recipe site!
+              </p>
+              <p>
+                <Button variant="primary" href="/signup">Sign up</Button>
+                {'   '}
+                <Button variant="outline-primary" href="/login">
+                  Login
+                </Button>
+                { ' ' }
+                <Button variant="outline-primary" href="/recipes">Browse Recipes</Button>
+              </p>
+
+            </Jumbotron>
           </Route>
         </Switch>
+        <NewRecipe show={show} handleClose={handleClose} handleShow={handleShow} />
         </div>
       </Router>
       

@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/94fb533f-90fc-4651-900a-ecb41a5cfbbf/resourceGroups/recipe-site/providers/Microsoft.Web/sites/some-recipes",
+    "appService.deploySubpath": "backend"
+}

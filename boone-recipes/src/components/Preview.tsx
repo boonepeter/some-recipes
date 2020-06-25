@@ -16,7 +16,7 @@ const Preview: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
 
 
   return (
-    <Card style={{ minHeight: "200px"}}>
+    <Card style={{ minHeight: "150px"}}>
       <Card.Body>
         <Card.Title>
           <Link to={`/recipes/${recipe.id}`}>{recipe.title}</Link>

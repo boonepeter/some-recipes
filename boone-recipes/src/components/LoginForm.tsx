@@ -3,8 +3,13 @@ import { Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 import { useHistory } from 'react-router-dom';
+import { User } from '../types';
 
-const LoginForm: React.FC = () => {
+interface Props {
+  appLogin: (user: User|null) => void;
+}
+
+const LoginForm: React.FC<Props> = ({appLogin}: Props) => {
     const [ email, setEmail ] = useState('');
     const [ password, setPassword] = useState('');
     let history = useHistory();
@@ -12,13 +17,13 @@ const LoginForm: React.FC = () => {
       event.preventDefault();
       event.stopPropagation();
       const response = await axios.post(`${apiBaseUrl}/login`, { email: email, password: password})
-      console.log(response.data)
       if (response.data) {
         window.localStorage.setItem('some-recipes-user-token', JSON.stringify(response.data));
       }
       setEmail('');
       setPassword('');
-      history.push('/');
+      appLogin(response.data.user as User);
+      history.push('/recipes');
     };
   return (
       <div>

@@ -2,23 +2,27 @@ import React, { useState } from 'react';
 import { Form, Button, Col, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
-import { NewUser } from '../types'
+import { NewUser, User } from '../types'
+import { useHistory } from 'react-router-dom';
 
-const SignUpForm: React.FC = () => {
+interface Props {
+    appLogin: (user: User) => void;
+}
 
+const SignUpForm: React.FC<Props> = ({ appLogin }: Props) => {
+    let history = useHistory();
     const [ firstName, setFirstName] = useState('');
     const [ lastName, setLastName] = useState('');
     const [ username, setUsername] = useState('');
     const [ email, setEmail] = useState('');
     const [ password, setPassword] = useState('');
 
-
-
     const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
       const form = event.currentTarget as HTMLInputElement;
+      event.preventDefault();
+      event.stopPropagation();
       if (form.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
+        return;
       }
       const newUser: NewUser = {
           username: username,
@@ -28,11 +32,16 @@ const SignUpForm: React.FC = () => {
           lists: [],
           password: password
       }
-      const returned = await axios.post(`${apiBaseUrl}/users`, newUser)
-      console.log(returned.data);
+      await axios.post(`${apiBaseUrl}/users`, newUser);
+      const response = await axios.post(`${apiBaseUrl}/login`, { email: email, password: password})
+      if (response.data) {
+        window.localStorage.setItem('some-recipes-user-token', JSON.stringify(response.data));
+      }
+      appLogin(response.data.user as User);
+      history.push('/recipes');
     };
   return (
-      <div>
+      <div style={{ margin: "20px"}}>
           <h1>Sign up</h1>
           <Form onSubmit={handleSubmit}>
             <Form.Row>

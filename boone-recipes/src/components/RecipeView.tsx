@@ -1,18 +1,24 @@
-import React from 'react';
-import { Recipe } from '../types';
+import React, { useState } from 'react';
+import { Recipe, User } from '../types';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
-import { Badge } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart, faCheck } from '@fortawesome/free-solid-svg-icons';
 
-const RecipeView: React.FC = () => {
+interface Props {
+  loggedInUser?: User|null|undefined;
+}
+
+const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
   const { id } = useParams<{id: string}>();
   const [recipe, setRecipe] = React.useState<Recipe | null>(null);
-  
+  const [isSaved, setIsSaved] = useState<boolean>(false);
+
   React.useEffect(() => {
     const getRecipe = async () => {
       const response = await axios.get<Recipe>(`${apiBaseUrl}/recipes/${id}`);
-      console.log("public url", process.env.PUBLIC_URL)
       if (response.data) {
         setRecipe(response.data)
       }
@@ -20,11 +26,29 @@ const RecipeView: React.FC = () => {
     getRecipe();
   }, [id]);
 
+  React.useEffect(() => {
+    const favList = loggedInUser?.lists.find(l => l.title === "Favorites")
+    if (favList) {
+      if (favList.recipes.find(r => r.id === id)) {
+        setIsSaved(true);
+      }
+    }
+  }, [loggedInUser, id])
+
+  const saveRecipe = async () => {
+    const listId = loggedInUser?.lists.find(l => l.title === "Favorites");
+    const response = await axios.put(`${apiBaseUrl}/lists/${listId?.id}`, { recipeId: recipe?.id });
+    if (response.status === 200) {
+      setIsSaved(true);
+    }
+  }
+
   if (!recipe) {
     return null;
   }
+
   return (
-    <div>
+    <div style={{margin: "20px"}}>
       <h2>{recipe.title}
       { recipe.link ? 
           <a target="_blank" title="open in new tab" style={{paddingLeft: '5px'}} rel="noopener noreferrer" href={recipe.link}>
@@ -36,6 +60,19 @@ const RecipeView: React.FC = () => {
         : null}
       
       </h2>
+
+      {
+        loggedInUser ? 
+          <Button variant="outline-success" title="Save to favorites" onClick={saveRecipe}>
+            {
+              isSaved ?
+                <FontAwesomeIcon icon={faCheck}/>
+              : <FontAwesomeIcon icon={faHeart} />
+            } 
+          </Button>
+          : null
+      }
+      
       {
         recipe.tags ? 
         <div>
@@ -43,25 +80,38 @@ const RecipeView: React.FC = () => {
           { recipe.tags.map(t =>
             <Badge className="ml-10" style={{margin: 5}} variant="light" key={t}>
               <Link to={`/search?type=tag&terms=${t}`}>{t}</Link>
-              </Badge>)}
+            </Badge>)}
         </div>
         : null  
       }
       <div>
-        {recipe.description}
+          {recipe.description}
       </div>
-      <h3>Ingredients</h3>
+      <br></br>
+      <h4>Ingredients</h4>
       <ul>
       <div>
           {recipe.ingredients.map((i: string) => <li key={i}>{i}</li>)}
       </div>
       </ul>
-        <h3>Directions</h3>
-      <ul>
+        <h4>Directions</h4>
+      <ol>
       <div>
           {recipe.directions.map((i: string) => <li key={i}>{i}</li>)}
       </div>
-      </ul>
+      </ol>
+      {
+        recipe.notes && recipe.notes.length > 0 ?
+        <div>
+          <h4>Notes</h4>
+          <ul>
+            {
+              recipe.notes.map((n: string) => <li key={n}>{n}</li>)
+            }
+          </ul>
+        </div>
+        : null
+      }
     </div>
   )
 }

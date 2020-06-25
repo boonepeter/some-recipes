@@ -7,8 +7,7 @@ const loginRouter = express.Router();
 
 loginRouter.post('/', async (request, response) => {
   const body = request.body
-  const user = await UserModel.findOne({ email: body.email })
-  console.log('found', user)
+  const user = await UserModel.findOne({ email: body.email }).populate({ path: 'lists', populate: { path: 'recipes' }})
   if (user === null) {
     response.status(401).json({ error: 'invalid username' })
   }

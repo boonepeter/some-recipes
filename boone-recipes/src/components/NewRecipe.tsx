@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import NewRecipeForm from './NewRecipeForm';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 interface Props {
   handleClose: () => void;
@@ -11,24 +11,15 @@ interface Props {
 const NewRecipeModal: React.FC<Props> = ({ handleClose, handleShow, show }: Props) => {
 
     return (
-        <Modal size="lg" centered show={show} onHide={handleClose} >
+        <Modal size="lg" centered show={show} animation={false} onHide={handleClose} >
           <Modal.Header closeButton>
             <Modal.Title>
-              Add new recipe
+              New Recipe
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <NewRecipeForm />
-            <div>new recipe form</div>
+            <NewRecipeForm handleClose={handleClose} />
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-                Close
-            </Button>
-            <Button variant="primary" onClick={handleClose}>
-                Add
-            </Button>
-          </Modal.Footer>
         </Modal>
     )
 }

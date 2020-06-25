@@ -5,6 +5,7 @@ import listRouter from './controllers/listRouter';
 import userRouter from './controllers/userRouter';
 import loginRouter from './controllers/loginRouter';
 import searchRouter from './controllers/searchRouter';
+import path from 'path';
 import config from './utils/config';
 require('express-async-errors')
 const app = express();
@@ -40,10 +41,10 @@ app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/search', searchRouter)
 
-if (process.env.NODE_ENV === 'test') {
-  const testingRouter = require('./controllers/testingRouter')
-  app.use('/api/testing', testingRouter)
-}
+// send everything else to the frontend index
+app.get('/*', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+})
 
 app.use(middleware.errorHandler)
 app.use(middleware.unknownEndpoint)

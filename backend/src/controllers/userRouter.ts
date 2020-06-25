@@ -7,12 +7,7 @@ import RecipeListSchema from '../models/RecipeListSchema';
 const userRouter = express.Router();
 
 userRouter.get('/', async (_req, response) => {
-    const users = await UserSchema.find({}).populate('lists', {
-        title: 1,
-        id: 1,
-        recipes: 1,
-        user: 1
-    });
+    const users = await UserSchema.find({}).populate({ path: 'lists', populate: { path: 'recipes' }});
     logger.info(users.length);
     response.json(users.map(u => u.toJSON()));
 })
@@ -50,12 +45,12 @@ userRouter.post('/', async (request, response) => {
 })
 
 userRouter.get('/:id', async (request, response) => {
-    const user = await UserSchema.findOne({username: request.params.id }).populate('lists', {
-        title: 1,
-        id: 1,
-        recipes: 1,
-        user: 1
-    });
+    const user = await UserSchema.findOne({username: request.params.id }).populate(
+        {
+          path: 'lists',
+          populate: { path: 'recipes'}
+        }
+    );
     if (user) {
         response.json(user.toJSON());
     } else {
@@ -68,8 +63,6 @@ userRouter.put('/:id', async (request, response) => {
     if (!user) {
         response.status(404).end();
     }
-    
-
 })
 
 

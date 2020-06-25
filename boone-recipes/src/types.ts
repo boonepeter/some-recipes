@@ -15,12 +15,14 @@ export interface Recipe {
     id: string;
     ingredients: string[];
     directions: string[];
+    notes?: string[];
     link?: string;
     reviews: string[];
     tags: string[];
 }
 
 export interface RecipeList {
+    id: string;
     title: string;
     recipes: Recipe[];
 }

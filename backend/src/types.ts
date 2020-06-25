@@ -16,6 +16,7 @@ export interface Recipe {
     ingredients: string[];
     directions: string[];
     link?: string;
+    notes?: string[];
     reviews: string[];
     tags: string[];
 }

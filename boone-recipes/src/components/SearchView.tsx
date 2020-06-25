@@ -5,6 +5,7 @@ import Preview from './Preview'
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
+
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
   }
@@ -29,7 +30,7 @@ const SearchView: React.FC = () => {
           }
       }
       searchRecipes();
-  }, [])
+  }, [query])
 
   if (searching === true) {
       return (
