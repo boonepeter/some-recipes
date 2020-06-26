@@ -60,7 +60,7 @@ const App: React.FC = () => {
     <div>
       <Router>
         <NavigationBar user={user} logout={logout} showNewModal={handleShow}  />
-        <div className="container" style={{ marginTop: "20px"}}>
+        <div className="container">
         <Switch>
           <Route path="/recipes/:id"> 
             <RecipeView loggedInUser={user} />
@@ -104,7 +104,6 @@ const App: React.FC = () => {
         <NewRecipe show={show} handleClose={handleClose} handleShow={handleShow} />
         </div>
       </Router>
-      
     </div>
   );
 }

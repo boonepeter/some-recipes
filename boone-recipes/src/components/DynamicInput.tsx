@@ -26,7 +26,6 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList 
         setItemList([...Array(startNum)].map((x, i) => newItem()));
     }, [startNum, setItemList])
 
-
     const removeItem = (id: string) => {
         setItemList(itemList.filter(i => i.id !== id))
     }
@@ -42,17 +41,18 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList 
             <Container style={{ marginBottom: "20px"}}>
             {
                 itemList.map(i => (
-                        <Row key={i.id}>
-                        <Col>
+                        <Row key={i.id} >
+                        <Col >
                             <Form.Group>
                                 <Form.Control 
                                     type="text"
                                     required
+                                    value={i.value}
                                     onChange={({ target }) => i.value = target.value}
                                     />
                             </Form.Group>
                         </Col>
-                        <Col md="auto">
+                        <Col xs={2}>
                                 <Button disabled={isDisabled} variant="outline-secondary" onClick={() => removeItem(i.id)}>
                                     <FontAwesomeIcon icon={faMinus} />
                                 </Button>
