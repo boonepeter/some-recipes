@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CardColumns, Spinner } from 'react-bootstrap';
+import { CardColumns, Spinner, Container } from 'react-bootstrap';
 import { Recipe } from '../types';
 import Preview from './Preview'
 import { useLocation } from 'react-router-dom';
@@ -9,6 +9,8 @@ import { apiBaseUrl } from '../constants';
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
   }
+
+let render = 0;
 const SearchView: React.FC = () => {
   const [ recipes, setRecipes ] = useState<Recipe[]>([]);
   const [ searching, setSearching ] = useState(true);
@@ -16,11 +18,11 @@ const SearchView: React.FC = () => {
 
   React.useEffect(() => {
       const searchRecipes = async () => {
-
           const terms = query.getAll("terms")
           const queryType = query.getAll("type")
           if (!terms || !queryType) {
-            return;
+              setSearching(false);
+              setRecipes([]);
           } else {
               const recipes = await axios.get<Recipe[]>(`${apiBaseUrl}/search?type=${queryType}&terms=${terms}`)
               if (recipes) {
@@ -30,30 +32,33 @@ const SearchView: React.FC = () => {
           }
       }
       searchRecipes();
-  }, [query])
+  }, [])
 
   if (searching === true) {
       return (
-          <Spinner animation="border"/>
+          <Container style={{ marginTop: "20px"}}>
+              <Spinner animation="border" />
+          </Container>
       )
   } 
-  if (recipes.length === 0) {
+  if (recipes.length === 0 && searching === false) {
+      console.log(searching, 'no')
       return (
-          <div className="container">
+          <div className="container" style={{ marginTop: "20px" }}>
             <h2>No recipes found. Try again?</h2>
-            <div>searching {searching}</div>
-            <Spinner animation="border" className="mr-auto ml-auto"/>
           </div>
 
       )
   }
   return (
-    <CardColumns>
-        {
-            recipes.map((r: Recipe) => (
-            <Preview key={r.id} recipe={r}/>
-        ))}
-    </CardColumns>
+      <Container style={{ marginTop: "20px"}}>
+        <CardColumns>
+            {
+                recipes.map((r: Recipe) => (
+                <Preview key={r.id} recipe={r}/>
+            ))}
+        </CardColumns>
+      </Container>
   )
 }
 

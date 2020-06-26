@@ -89,12 +89,19 @@ const App: React.FC = () => {
                 Me too. Try out this simple recipe site!
               </p>
               <p>
-                <Button variant="primary" href="/signup">Sign up</Button>
-                {'   '}
-                <Button variant="outline-primary" href="/login">
-                  Login
-                </Button>
-                { ' ' }
+                {
+                  user ? 
+                  null
+                  :
+                  <>
+                    <Button variant="primary" href="/signup">Sign up</Button>
+                    {'   '}
+                    <Button variant="outline-primary" href="/login">
+                      Login
+                    </Button>
+                    { ' ' }
+                  </>
+                }
                 <Button variant="outline-primary" href="/recipes">Browse Recipes</Button>
               </p>
 

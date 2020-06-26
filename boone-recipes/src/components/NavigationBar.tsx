@@ -20,7 +20,6 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
 
   const searchRecipes = (event: React.FormEvent<EventTarget>) => {
     history.push(`/search?type=title&terms=${searchTerm}`)
-    setSearchTerm('');
     event.preventDefault();
   }
 
