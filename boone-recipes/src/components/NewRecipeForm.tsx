@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Col, Row, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import { apiBaseUrl, parseApiBaseUrl } from '../constants';
+import { apiBaseUrl, parseApiBaseUrl, supportedUrls } from '../constants';
 import { Recipe } from '../types'
 import DynamicInput from './DynamicInput';
 import { useHistory } from 'react-router-dom';
@@ -30,9 +30,35 @@ const NewRecipeForm: React.FC<Props> = ({handleClose}: Props) => {
   const [tags, setTags] = useState<Item[]>([]);
 
   const [isImporting, setIsImporting] = useState(false);
+  const [ hostName, setHostname] = useState('');
+  const [isSupported, setIsSupported] = useState(true);
 
   const newItem = (value: string): Item => {
     return { value: value, id: uuid() }
+  }
+
+
+
+  const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLink(e.target.value);
+    if (e.target.value === "") {
+      setHostname('');
+      setIsSupported(true);
+      return;
+    }
+    try {
+      const host = new URL(e.target.value).hostname;
+      setHostname(host);
+      if (supportedUrls.find(u => u === host || 'www.' + u === host) !== undefined) {
+        setIsSupported(true)
+      } else {
+        setIsSupported(false);
+      }
+    } catch {
+      setHostname('');
+      setIsSupported(false);
+      return;
+    }
   }
 
   const handleImport = async () => {
@@ -95,11 +121,11 @@ const NewRecipeForm: React.FC<Props> = ({handleClose}: Props) => {
                 required={false}
                 placeholder="www.example.com"
                 value={link}
-                onChange={({ target }) => setLink(target.value)}
+                onChange={handleLinkChange}
                 />
             </Col>
-            <Col>
-              <Button disabled={ link === "" } onClick={handleImport}>
+            <Col xs={3}>
+              <Button disabled={ link === "" || !isSupported } onClick={handleImport}>
                 {
                   isImporting ?
                   <Spinner animation="border"/>
@@ -108,19 +134,30 @@ const NewRecipeForm: React.FC<Props> = ({handleClose}: Props) => {
               </Button>
             </Col>
           </Row>
+          {
+            isSupported || !hostName ?
+              null :
+              <Row>
+                <Col>
+                    <p>
+                      Sorry, {hostName ? hostName : "that domain"} is not currently supported.{ ' ' }
+                      <a href="https://github.com/boonepeter/some-recipes/issues" target="_blank" rel="noopener noreferrer">Suggest it here</a>
+                    </p>
+                </Col>
+              </Row>              
+          }
         </Form.Group>
         <Form.Group>
           <Form.Label>Description</Form.Label>
           <Form.Control as="textarea"
             rows={3}
-            required
             placeholder="Short description..."
             onChange={({ target }) => setDescription(target.value)}
             />
         </Form.Group>
-        <DynamicInput title="Ingredients" startNum={3} itemList={ingredients} setItemList={setIngredients}/>
-        <DynamicInput title="Directions" startNum={3} itemList={directions} setItemList={setDirections}/>
-        <DynamicInput title="Tags" itemList={tags} setItemList={setTags}/>
+        <DynamicInput title="Ingredients" required startNum={3} itemList={ingredients} setItemList={setIngredients}/>
+        <DynamicInput title="Directions" large required startNum={3} itemList={directions} setItemList={setDirections}/>
+        <DynamicInput title="Tags" required itemList={tags} setItemList={setTags}/>
         <DynamicInput title="Notes" itemList={notes} setItemList={setNotes}/>
         <div className="container" style={{ marginTop: "20px", marginBottom: "20px"}}>
           <Button type="submit" size="lg" block>Submit</Button>

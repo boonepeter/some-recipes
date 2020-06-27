@@ -10,7 +10,6 @@ const useQuery = () => {
     return new URLSearchParams(useLocation().search);
   }
 
-let render = 0;
 const SearchView: React.FC = () => {
   const [ recipes, setRecipes ] = useState<Recipe[]>([]);
   const [ searching, setSearching ] = useState(true);
@@ -42,7 +41,6 @@ const SearchView: React.FC = () => {
       )
   } 
   if (recipes.length === 0 && searching === false) {
-      console.log(searching, 'no')
       return (
           <div className="container" style={{ marginTop: "20px" }}>
             <h2>No recipes found. Try again?</h2>
