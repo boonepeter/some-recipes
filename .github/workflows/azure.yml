@@ -22,6 +22,8 @@ env:
   AZURE_WEBAPP_NAME: some-recipes    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: './backend'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '12.x'                # set this to the node version to use
+  SECRET: ${{ secrets.SECRET}}
+  MONGODB_URI: ${{ secrets.MONGODB_URI }}
 
 jobs:
   build-and-deploy:
@@ -38,8 +40,8 @@ jobs:
       run: |
         # Build and test the project, then
         # deploy to Azure Web App.
-        rm -r ./backend/build 
-        rm -r ./backend/dist/build
+        rm -rf ./backend/build 
+        rm -rf ./backend/dist/build
         cd ./boone-recipies
         npm install
         npm run build --prod
