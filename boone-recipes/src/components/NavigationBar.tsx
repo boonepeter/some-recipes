@@ -20,7 +20,6 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
 
   const searchRecipes = (event: React.FormEvent<EventTarget>) => {
     history.push(`/search?type=title&terms=${searchTerm}`)
-    setSearchTerm('');
     event.preventDefault();
   }
 
@@ -58,7 +57,7 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
             {
               user ? 
               <Dropdown>
-                <Dropdown.Toggle variant="light" id="dropdown-basic">
+                <Dropdown.Toggle style={{ marginRight: "10px"}} variant="light" id="dropdown-basic">
                    {user.username}
                 </Dropdown.Toggle>
 
@@ -69,7 +68,6 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
               </Dropdown>
               : null
             }
-            { ' ' }
             <Button title="Add new recipe" onClick={showNewModal} variant="outline-primary" style={showLoggedIn}>
               <FontAwesomeIcon icon={faPlus}/>
             </Button>

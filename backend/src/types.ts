@@ -19,6 +19,8 @@ export interface Recipe {
     notes?: string[];
     reviews: string[];
     tags: string[];
+    imageURL?: string;
+    userId?: string;
 }
 
 export interface RecipeList {

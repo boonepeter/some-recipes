@@ -26,6 +26,7 @@ const App: React.FC = () => {
 
   const grabUser = async (username: string) => {
     const response = await axios.get(`${apiBaseUrl}/users/${username}`);
+    console.log(response.data)
     setUser(response.data)
   }
 
@@ -60,7 +61,7 @@ const App: React.FC = () => {
     <div>
       <Router>
         <NavigationBar user={user} logout={logout} showNewModal={handleShow}  />
-        <div className="container" style={{ marginTop: "20px"}}>
+        <div className="container">
         <Switch>
           <Route path="/recipes/:id"> 
             <RecipeView loggedInUser={user} />
@@ -89,22 +90,28 @@ const App: React.FC = () => {
                 Me too. Try out this simple recipe site!
               </p>
               <p>
-                <Button variant="primary" href="/signup">Sign up</Button>
-                {'   '}
-                <Button variant="outline-primary" href="/login">
-                  Login
-                </Button>
-                { ' ' }
+                {
+                  user ? 
+                  null
+                  :
+                  <>
+                    <Button variant="primary" href="/signup">Sign up</Button>
+                    {'   '}
+                    <Button variant="outline-primary" href="/login">
+                      Login
+                    </Button>
+                    { ' ' }
+                  </>
+                }
                 <Button variant="outline-primary" href="/recipes">Browse Recipes</Button>
               </p>
 
             </Jumbotron>
           </Route>
         </Switch>
-        <NewRecipe show={show} handleClose={handleClose} handleShow={handleShow} />
+        <NewRecipe show={show} handleClose={handleClose} handleShow={handleShow} loggedInUser={user}/>
         </div>
       </Router>
-      
     </div>
   );
 }

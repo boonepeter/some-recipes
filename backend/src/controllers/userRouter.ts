@@ -7,9 +7,12 @@ import RecipeListSchema from '../models/RecipeListSchema';
 const userRouter = express.Router();
 
 userRouter.get('/', async (_req, response) => {
-    const users = await UserSchema.find({}).populate({ path: 'lists', populate: { path: 'recipes' }});
-    logger.info(users.length);
-    response.json(users.map(u => u.toJSON()));
+    const users = await UserSchema.find({});
+    response.json(users.map(u => {
+        const privateUser = u.toJSON();
+        delete privateUser.email;
+        return privateUser;
+    }));
 })
 
 userRouter.post('/', async (request, response) => {
@@ -32,15 +35,11 @@ userRouter.post('/', async (request, response) => {
         title: "Favorites",
         user: savedUser._id
     })
-    logger.info('newList', newList);
     const savedList = await newList.save();
-    logger.info('savedList', savedList);
     const found = await UserSchema.findByIdAndUpdate(savedUser._id, { lists: [ savedList._id ]}, { new: true });
-    logger.info('found', found);
     if (!found) {
         response.status(404).end();
     }
-
     response.json(found?.toJSON())
 })
 
@@ -52,7 +51,9 @@ userRouter.get('/:id', async (request, response) => {
         }
     );
     if (user) {
-        response.json(user.toJSON());
+        const privateUser = user.toJSON();
+        delete privateUser.email;
+        response.json(privateUser);
     } else {
         response.status(404).end()
     }

@@ -15,17 +15,35 @@ interface Props {
     startNum?: number;
     itemList: Item[];
     setItemList: React.Dispatch<React.SetStateAction<Item[]>>;
+    required?: boolean;
+    type?: string;
+    large?: boolean;
 }
 
-const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList }: Props) => {
+const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList, required, type, large }: Props) => {
+    
     const newItem = (): Item => {
-        return { value: '', id: uuid() }
+        return { 
+            value: "", 
+            id: uuid()
+         }
+    }
+
+    const updateItem = (id: string, value: string) => {
+        const index = itemList.findIndex(i => i.id === id)
+        let items = [...itemList];
+        let item = { ...itemList[index] };
+        if (!item) {
+            return;
+        }
+        item.value = value;
+        items[index] = item;
+        setItemList(items);
     }
 
     React.useEffect(() => {
         setItemList([...Array(startNum)].map((x, i) => newItem()));
     }, [startNum, setItemList])
-
 
     const removeItem = (id: string) => {
         setItemList(itemList.filter(i => i.id !== id))
@@ -42,17 +60,30 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList 
             <Container style={{ marginBottom: "20px"}}>
             {
                 itemList.map(i => (
-                        <Row key={i.id}>
-                        <Col>
+                        <Row key={i.id} >
+                        <Col >
                             <Form.Group>
-                                <Form.Control 
-                                    type="text"
-                                    required
-                                    onChange={({ target }) => i.value = target.value}
-                                    />
+                                {
+                                    large ? 
+                                        <Form.Control
+                                        as="textarea"
+                                        rows={2}
+                                        required={required}
+                                        value={i.value}
+                                        onChange={({ target }) => updateItem(i.id, target.value)}
+                                        />
+                                    :
+                                    <Form.Control
+                                        type={type}
+                                        required={required}
+                                        value={i.value}
+                                        onChange={({ target }) => updateItem(i.id, target.value)}
+                                        />
+                                
+                                }
                             </Form.Group>
                         </Col>
-                        <Col md="auto">
+                        <Col xs={2}>
                                 <Button disabled={isDisabled} variant="outline-secondary" onClick={() => removeItem(i.id)}>
                                     <FontAwesomeIcon icon={faMinus} />
                                 </Button>
@@ -73,7 +104,10 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList 
 }
 
 DynamicInput.defaultProps = {
-    startNum: 1
+    startNum: 1,
+    required: false,
+    type: "text",
+    large: false
 }
 
 export default DynamicInput;
