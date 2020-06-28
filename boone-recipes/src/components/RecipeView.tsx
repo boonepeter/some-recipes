@@ -3,7 +3,7 @@ import { Recipe, User } from '../types';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
-import { Badge, Button, Image, Row, Col } from 'react-bootstrap';
+import { Badge, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faCheck, faEdit } from '@fortawesome/free-solid-svg-icons';
 
@@ -31,12 +31,14 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
       }
     };
     getRecipe();
+    // eslint-disable-next-line
   }, [id]);
 
   React.useEffect(() => {
     if (recipe?.user && loggedInUser?.id === recipe.user.id) {
       setCanEdit(true);
     }
+    // eslint-disable-next-line
   }, [loggedInUser])
 
   React.useEffect(() => {
@@ -118,7 +120,7 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
       {
         recipe.imageURL ?
         <div style={{ marginBottom: "20px"}}>
-          <img src={recipe.imageURL} style={{width: "100%", maxWidth: "500px", height: "auto" }}/>
+          <img src={recipe.imageURL} alt={recipe.title} style={{width: "100%", maxWidth: "500px", height: "auto" }}/>
         </div>
         : null
       }

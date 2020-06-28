@@ -31,6 +31,7 @@ const SearchView: React.FC = () => {
           }
       }
       searchRecipes();
+      // eslint-disable-next-line
   }, [])
 
   if (searching === true) {
