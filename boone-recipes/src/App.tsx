@@ -83,30 +83,30 @@ const App: React.FC = () => {
             <ProfileView loggedInUser={user}/>
           </Route>
           <Route path="/">
-            <Jumbotron >
-              <h2>Hate scrolling through blog posts to find a recipe?</h2>
-              <p/>
-              <p>
-                Me too. Try out this simple recipe site!
-              </p>
-              <p>
-                {
-                  user ? 
-                  null
-                  :
-                  <>
-                    <Button variant="primary" href="/signup">Sign up</Button>
-                    {'   '}
-                    <Button variant="outline-primary" href="/login">
-                      Login
-                    </Button>
-                    { ' ' }
-                  </>
-                }
-                <Button variant="outline-primary" href="/recipes">Browse Recipes</Button>
-              </p>
-
-            </Jumbotron>
+                <Jumbotron >
+                <h2>Hate scrolling through blog posts to find a recipe?</h2>
+                <p/>
+                <p>
+                  Me too. Try out this simple recipe site!
+                </p>
+                <p>
+                  {
+                    user ? 
+                    null
+                    :
+                    <>
+                      <Button variant="primary" href="/signup">Sign up</Button>
+                      {'   '}
+                      <Button variant="outline-primary" href="/login">
+                        Login
+                      </Button>
+                      { ' ' }
+                    </>
+                  }
+                  <Button variant="outline-primary" href="/recipes">Browse Recipes</Button>
+                </p>
+              </Jumbotron>
+            <RecipeList recipes={recipeList} />
           </Route>
         </Switch>
         <NewRecipe show={show} handleClose={handleClose} handleShow={handleShow} loggedInUser={user}/>
