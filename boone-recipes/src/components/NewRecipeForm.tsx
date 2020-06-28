@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Button, Col, Row, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { apiBaseUrl, parseApiBaseUrl, supportedUrls } from '../constants';
-import { Recipe } from '../types'
+import { Recipe, User } from '../types'
 import DynamicInput from './DynamicInput';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
@@ -16,9 +16,10 @@ type NewRecipe = Omit<Recipe, 'id'>;
 
 interface Props {
   handleClose: () => void;
+  loggedInUser: User | null | undefined;
 }
 
-const NewRecipeForm: React.FC<Props> = ({handleClose}: Props) => {
+const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser}: Props) => {
   const history = useHistory();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -32,12 +33,11 @@ const NewRecipeForm: React.FC<Props> = ({handleClose}: Props) => {
   const [isImporting, setIsImporting] = useState(false);
   const [ hostName, setHostname] = useState('');
   const [isSupported, setIsSupported] = useState(true);
+  const [image, setImage] = useState('');
 
   const newItem = (value: string): Item => {
     return { value: value, id: uuid() }
   }
-
-
 
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLink(e.target.value);
@@ -74,21 +74,24 @@ const NewRecipeForm: React.FC<Props> = ({handleClose}: Props) => {
       ])
       setIsImporting(false);
       const splitTitle = recipe.data.title.split(" ")
-      setTags(splitTitle.map((t: string) => newItem(t)))
+      setTags(splitTitle.map((t: string) => newItem(t)));
+      setImage(recipe.data.image);
     }
     setIsImporting(false);
   }
 
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     const recipe: NewRecipe = {
-        ingredients: ingredients.map(i => i.value),
+        ingredients: ingredients.flatMap(i => i.value === "" ? [] : i.value),
         title: title,
         description: description,
         reviews: [],
-        directions: directions.map(d => d.value),
-        tags: tags.map(t => t.value),
-        notes: notes.map(n => n.value),
-        link: link
+        directions: directions.flatMap(d => d.value === "" ? [] : d.value),
+        tags: tags.flatMap(t => t.value === "" ? [] : t.value),
+        notes: notes.flatMap(n => n.value === "" ? [] : n.value),
+        link: link,
+        user: loggedInUser ? loggedInUser : undefined,
+        imageURL: image === "" ? undefined : image
       }
       event.preventDefault();
       event.stopPropagation();
@@ -144,9 +147,14 @@ const NewRecipeForm: React.FC<Props> = ({handleClose}: Props) => {
                       <a href="https://github.com/boonepeter/some-recipes/issues" target="_blank" rel="noopener noreferrer">Suggest it here</a>
                     </p>
                 </Col>
-              </Row>              
+              </Row>
           }
         </Form.Group>
+        {
+          image ? 
+          <a href={image}>Image link</a>
+          : null
+        }
         <Form.Group>
           <Form.Label>Description</Form.Label>
           <Form.Control as="textarea"

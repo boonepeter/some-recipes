@@ -48,6 +48,18 @@ const recipeSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: false
+  },
+  imageURL: {
+    type: String,
+    required: false
+  },
+  temperature: {
+    type: String,
+    required: false
+  },
+  totalMinutes: {
+    type: Number,
+    required: false
   }
 })
 
@@ -59,7 +71,6 @@ recipeSchema.set('toJSON', {
       delete returnedObject.__v
     }
   })
-
 
 
 const Recipe = mongoose.model('Recipe', recipeSchema)

@@ -3,28 +3,41 @@ import { Recipe, User } from '../types';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
-import { Badge, Button } from 'react-bootstrap';
+import { Badge, Button, Image, Row, Col } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faCheck, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
   loggedInUser?: User|null|undefined;
+
 }
 
 const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
   const { id } = useParams<{id: string}>();
   const [recipe, setRecipe] = React.useState<Recipe | null>(null);
   const [isSaved, setIsSaved] = useState<boolean>(false);
+  const [canEdit, setCanEdit] = useState<boolean>(false);
 
   React.useEffect(() => {
     const getRecipe = async () => {
       const response = await axios.get<Recipe>(`${apiBaseUrl}/recipes/${id}`);
       if (response.data) {
         setRecipe(response.data)
+        console.log('recipe', response.data)
+        console.log('logged in', loggedInUser);
+        if (response.data.user && loggedInUser?.id === response.data.user.id) {
+          setCanEdit(true);
+        }
       }
     };
     getRecipe();
   }, [id]);
+
+  React.useEffect(() => {
+    if (recipe?.user && loggedInUser?.id === recipe.user.id) {
+      setCanEdit(true);
+    }
+  }, [loggedInUser])
 
   React.useEffect(() => {
     const favList = loggedInUser?.lists.find(l => l.title === "Favorites")
@@ -60,44 +73,65 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
         : null}
       
       </h2>
-
-      {
-        loggedInUser ? 
-          <Button variant="outline-success" title="Save to favorites" onClick={saveRecipe}>
-            {
-              isSaved ?
-                <FontAwesomeIcon icon={faCheck}/>
-              : <FontAwesomeIcon icon={faHeart} />
-            } 
-          </Button>
-          : null
-      }
+          {
+            loggedInUser ? 
+              <Button variant="outline-success" title="Save to favorites" onClick={saveRecipe}>
+                {
+                  isSaved ?
+                    <FontAwesomeIcon icon={faCheck}/>
+                  : <FontAwesomeIcon icon={faHeart} />
+                } 
+              </Button>
+              : null
+          }
+          {' '}
+        { 
+          canEdit ?
+            <Button variant="outline-secondary" title="Edit recipe (not supported yet)" disabled>
+              <FontAwesomeIcon icon={faEdit} />
+            </Button>
+          : null  
+        }
       
       {
         recipe.tags ? 
         <div>
           Tags:
-          { recipe.tags.map(t =>
-            <Badge className="ml-10" style={{margin: 5}} variant="light" key={t}>
+          { recipe.tags.map((t, index) =>
+            <Badge className="ml-10" style={{margin: 5}} variant="light" key={t + index}>
               <Link to={`/search?type=tag&terms=${t}`}>{t}</Link>
             </Badge>)}
         </div>
         : null  
       }
+      {
+        recipe.user ? 
+        <div>
+          Added by: <a href={`/profile/${recipe.user.username}`}>{recipe.user.name}</a>
+        </div>
+        : null
+      }
       <div>
           {recipe.description}
       </div>
       <br></br>
+      {
+        recipe.imageURL ?
+        <div style={{ marginBottom: "20px"}}>
+          <img src={recipe.imageURL} style={{width: "100%", maxWidth: "500px", height: "auto" }}/>
+        </div>
+        : null
+      }
       <h4>Ingredients</h4>
       <ul>
       <div>
-          {recipe.ingredients.map((i: string) => <li key={i}>{i}</li>)}
+          {recipe.ingredients.map((i, index) => <li key={i + index}>{i}</li>)}
       </div>
       </ul>
         <h4>Directions</h4>
       <ol>
       <div>
-          {recipe.directions.map((i: string) => <li key={i}>{i}</li>)}
+          {recipe.directions.map((d, index) => <li key={d + index}>{d}</li>)}
       </div>
       </ol>
       {

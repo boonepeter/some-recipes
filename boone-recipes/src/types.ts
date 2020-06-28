@@ -19,6 +19,8 @@ export interface Recipe {
     link?: string;
     reviews: string[];
     tags: string[];
+    user?: User;
+    imageURL?: string;
 }
 
 export interface RecipeList {
@@ -33,8 +35,9 @@ export interface User {
     name: string;
     lists: RecipeList[];
     friends: User[];
+    id: string;
 }
 
-export interface NewUser extends User {
+export interface NewUser extends Omit<User, 'id'> {
     password: string
 }

@@ -26,6 +26,7 @@ const App: React.FC = () => {
 
   const grabUser = async (username: string) => {
     const response = await axios.get(`${apiBaseUrl}/users/${username}`);
+    console.log(response.data)
     setUser(response.data)
   }
 
@@ -108,7 +109,7 @@ const App: React.FC = () => {
             </Jumbotron>
           </Route>
         </Switch>
-        <NewRecipe show={show} handleClose={handleClose} handleShow={handleShow} />
+        <NewRecipe show={show} handleClose={handleClose} handleShow={handleShow} loggedInUser={user}/>
         </div>
       </Router>
     </div>
