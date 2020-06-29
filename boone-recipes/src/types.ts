@@ -36,6 +36,7 @@ export interface User {
     lists: RecipeList[];
     friends: User[];
     id: string;
+    token?: string;
 }
 
 export interface NewUser extends Omit<User, 'id'> {

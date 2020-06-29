@@ -17,27 +17,46 @@ type NewRecipe = Omit<Recipe, 'id'>;
 interface Props {
   handleClose: () => void;
   loggedInUser: User | null | undefined;
+  recipe?: Recipe;
 }
 
-const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser}: Props) => {
+const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Props) => {
+  console.log(recipe)
   const history = useHistory();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [link, setLink] = useState('');
-
-  const [ingredients, setIngredients] = useState<Item[]>([]);
-  const [directions, setDirections] = useState<Item[]>([]);
-  const [notes, setNotes] = useState<Item[]>([]);
-  const [tags, setTags] = useState<Item[]>([]);
-
-  const [isImporting, setIsImporting] = useState(false);
-  const [ hostName, setHostname] = useState('');
-  const [isSupported, setIsSupported] = useState(true);
-  const [image, setImage] = useState('');
+  const [title, setTitle] = useState(recipe?.title ? recipe.title : '');
+  const [description, setDescription] = useState(recipe?.description ? recipe.description : '');
+  const [link, setLink] = useState(recipe?.link);
 
   const newItem = (value: string): Item => {
     return { value: value, id: uuid() }
   }
+  const [ingredients, setIngredients] = useState<Item[]>(
+    recipe ? 
+    recipe.ingredients.map(i => newItem(i))
+    : []
+  );
+  const [directions, setDirections] = useState<Item[]>(
+    recipe ? 
+    recipe.directions.map(i => newItem(i))
+    : []
+  );
+  const [notes, setNotes] = useState<Item[]>(
+    recipe?.notes ? 
+    recipe.notes.map(i => newItem(i))
+    : []
+  );
+  const [tags, setTags] = useState<Item[]>(
+    recipe ? 
+    recipe.tags.map(i => newItem(i))
+    : []
+  );
+
+  const [isImporting, setIsImporting] = useState(false);
+  const [hostName, setHostname] = useState('');
+  const [isSupported, setIsSupported] = useState(true);
+  const [image, setImage] = useState(recipe?.imageURL);
+
+
 
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLink(e.target.value);
@@ -81,7 +100,7 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser}: Props) => {
   }
 
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
-    const recipe: NewRecipe = {
+    const newRec: NewRecipe = {
         ingredients: ingredients.flatMap(i => i.value === "" ? [] : i.value),
         title: title,
         description: description,
@@ -96,10 +115,22 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser}: Props) => {
       event.preventDefault();
       event.stopPropagation();
       // TODO: add toast notification
-      const response = await axios.post(`${apiBaseUrl}/recipes`, recipe);
-      if (response.status === 200) {
+      if (recipe) {
+        console.log(loggedInUser);
+        const response = await axios.put(`${apiBaseUrl}/recipes/${recipe.id}`, {
+          recipe: newRec,
+          token: loggedInUser?.token
+        });
         if (response.data) {
+          history.push('/')
           history.push(`/recipes/${response.data.id}`);
+        }
+      } else {
+        const response = await axios.post(`${apiBaseUrl}/recipes`, recipe);
+        if (response.status === 200) {
+          if (response.data) {
+            history.push(`/recipes/${response.data.id}`);
+          }
         }
       }
       handleClose();
@@ -150,15 +181,11 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser}: Props) => {
               </Row>
           }
         </Form.Group>
-        {
-          image ? 
-          <a href={image}>Image link</a>
-          : null
-        }
         <Form.Group>
           <Form.Label>Description</Form.Label>
           <Form.Control as="textarea"
             rows={3}
+            value={description}
             placeholder="Short description..."
             onChange={({ target }) => setDescription(target.value)}
             />
@@ -168,7 +195,11 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser}: Props) => {
         <DynamicInput title="Tags" required itemList={tags} setItemList={setTags}/>
         <DynamicInput title="Notes" itemList={notes} setItemList={setNotes}/>
         <div className="container" style={{ marginTop: "20px", marginBottom: "20px"}}>
-          <Button type="submit" size="lg" block>Submit</Button>
+          <Button type="submit" size="lg" block>
+          {
+            recipe ? 'Update' : 'Submit'
+          }
+          </Button>
         </div>
       </Form>
     )

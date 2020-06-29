@@ -42,7 +42,10 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList,
     }
 
     React.useEffect(() => {
-        setItemList([...Array(startNum)].map((x, i) => newItem()));
+        if (itemList.length === 0) {
+            setItemList([...Array(startNum)].map((x, i) => newItem()));
+        }
+        // eslint-disable-next-line
     }, [startNum, setItemList])
 
     const removeItem = (id: string) => {

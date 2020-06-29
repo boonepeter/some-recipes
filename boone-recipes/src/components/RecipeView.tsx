@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Recipe, User } from '../types';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 import { Badge, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faCheck, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons';
+import NewRecipe from './NewRecipe';
 
 interface Props {
   loggedInUser?: User|null|undefined;
@@ -13,10 +15,14 @@ interface Props {
 }
 
 const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
+  const history = useHistory();
   const { id } = useParams<{id: string}>();
   const [recipe, setRecipe] = React.useState<Recipe | null>(null);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [canEdit, setCanEdit] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => setShowModal(true);
 
   React.useEffect(() => {
     const getRecipe = async () => {
@@ -57,6 +63,16 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
       setIsSaved(true);
     }
   }
+  
+  const deleteRecipe = async () => {
+    const windowRes = window.confirm('Are you sure you want to delete this recipe?');
+    if (windowRes) {
+      const response = await axios.delete(`${apiBaseUrl}/recipes/${id}`, { data: { token: loggedInUser?.token }})
+      if (response.status === 200) {
+        history.push('/');
+      }
+    }
+  }
 
   if (!recipe) {
     return null;
@@ -77,11 +93,11 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
       </h2>
           {
             loggedInUser ? 
-              <Button variant="outline-success" title="Save to favorites" onClick={saveRecipe}>
+              <Button variant="outline-secondary" title="Save to favorites" onClick={saveRecipe}>
                 {
                   isSaved ?
-                    <FontAwesomeIcon icon={faCheck}/>
-                  : <FontAwesomeIcon icon={faHeart} />
+                    <FontAwesomeIcon icon={faHeart}/>
+                    : <FontAwesomeIcon icon={farHeart} />
                 } 
               </Button>
               : null
@@ -89,11 +105,19 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
           {' '}
         { 
           canEdit ?
-            <Button variant="outline-secondary" title="Edit recipe (not supported yet)" disabled>
+          <>
+            <Button variant="outline-secondary" title="Edit recipe" onClick={handleShow}>
               <FontAwesomeIcon icon={faEdit} />
             </Button>
+            { ' ' }
+            <Button variant="outline-danger" title="Delete recipe" onClick={deleteRecipe}>
+              <FontAwesomeIcon icon={faTrashAlt} />
+            </Button>
+          </>
           : null  
         }
+        
+        
       
       {
         recipe.tags ? 
@@ -148,6 +172,11 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
         </div>
         : null
       }
+      <NewRecipe show={showModal} 
+        handleClose={handleClose} 
+        handleShow={handleShow} 
+        loggedInUser={loggedInUser}
+        recipe={recipe} />
     </div>
   )
 }

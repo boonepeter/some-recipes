@@ -24,18 +24,21 @@ const App: React.FC = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const grabUser = async (username: string) => {
+  const grabUser = async (username: string, token?: string) => {
     const response = await axios.get(`${apiBaseUrl}/users/${username}`);
-    console.log(response.data)
-    setUser(response.data)
+    const newUser = {
+      ...response.data,
+      token: token
+    }
+    setUser(newUser)
   }
 
   React.useEffect(() => {
     const token = localStorage.getItem('some-recipes-user-token');
     if (token) {
-      const parsedUser: User|null = JSON.parse(token).user;
+      const parsedUser = JSON.parse(token);
       if (parsedUser) {
-        grabUser(parsedUser.username);
+        grabUser(parsedUser.username, parsedUser.token);
       }
     }
   }, [])
@@ -61,7 +64,7 @@ const App: React.FC = () => {
     <div>
       <Router>
         <NavigationBar user={user} logout={logout} showNewModal={handleShow}  />
-        <div className="container">
+        <div className="container" style={{ marginTop: "20px"}}>
         <Switch>
           <Route path="/recipes/:id"> 
             <RecipeView loggedInUser={user} />
@@ -109,7 +112,7 @@ const App: React.FC = () => {
             <RecipeList recipes={recipeList} />
           </Route>
         </Switch>
-        <NewRecipe show={show} handleClose={handleClose} handleShow={handleShow} loggedInUser={user}/>
+        <NewRecipe show={show} handleClose={handleClose} handleShow={handleShow} loggedInUser={user} />
         </div>
       </Router>
     </div>

@@ -36,6 +36,11 @@ export interface User {
     friends: User[];
 }
 
+export interface UserToken {
+    email: string;
+    id: string;
+}
+
 export interface UserWithHash extends User {
     passwordHash: string;
 }

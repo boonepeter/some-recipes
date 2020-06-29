@@ -18,12 +18,20 @@ const LoginForm: React.FC<Props> = ({appLogin}: Props) => {
       event.stopPropagation();
       const response = await axios.post(`${apiBaseUrl}/login`, { email: email, password: password})
       if (response.data) {
-        window.localStorage.setItem('some-recipes-user-token', JSON.stringify(response.data));
+        console.log(response.data, 'login')
+        let user: User = {
+          ...response.data.user
+        };
+        user.token = response.data.token;
+        delete user.lists;
+        window.localStorage.setItem('some-recipes-user-token', JSON.stringify(user));
+        appLogin(user as User);
+      } else {
+        appLogin(null);
       }
       setEmail('');
       setPassword('');
-      appLogin(response.data.user as User);
-      history.push('/recipes');
+      history.push('/');
     };
   return (
       <div>

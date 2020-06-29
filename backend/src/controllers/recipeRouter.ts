@@ -3,6 +3,7 @@ import RecipeSchema from '../models/RecipeSchema';
 import UserSchema from '../models/UserSchema';
 import logger from '../utils/logger';
 import jwt from 'jsonwebtoken';
+import { UserToken, Recipe } from '../types';
 
 const recipeRouter = express.Router();
 
@@ -29,7 +30,6 @@ recipeRouter.post('/', async (request, response) => {
 
 recipeRouter.get('/:id', async (request, response) => {
     const recipe = await RecipeSchema.findById(request.params.id).populate('user');
-
     if (recipe) {
         console.log(recipe.toJSON());
         response.json(recipe.toJSON());
@@ -40,9 +40,43 @@ recipeRouter.get('/:id', async (request, response) => {
 
 recipeRouter.put('/:id', async (request, response) => {
     const token = request.body.token;
-    const userForToken = jwt.verify(token, process.env.SECRET as string);
-    console.log(userForToken);
-    
+    if (!token || !request.body.recipe) {
+        response.status(401).json({ error: "No authorization token" })
+    }
+    try {
+        const recipe = await RecipeSchema.findById(request.params.id);
+        const userForToken: any = jwt.verify(token, process.env.SECRET as string);
+        if (userForToken?.id == recipe?.toJSON().user) {
+            const user = await UserSchema.findById(userForToken.id);
+            const updated = await RecipeSchema.findByIdAndUpdate(
+                request.params.id, 
+                {...request.body.recipe, user: user}, 
+                { new: true});
+            response.json(updated?.toJSON()).end();
+        }
+    } catch {
+        response.status(400).json({ error: "some error"})
+    }
+})
+
+recipeRouter.delete('/:id', async (request, response) => {
+    const token = request.body.token;
+    if (!token) {
+        response.status(401).json({ error: "No authorization token" }).end()
+    }
+    try {
+        const recipe = await RecipeSchema.findById(request.params.id);
+        const userForToken: any = jwt.verify(token, process.env.SECRET as string);
+        if (userForToken.id && recipe && userForToken.id == recipe.toJSON().user ) {
+            const reply = await RecipeSchema.findByIdAndDelete(request.params.id);
+            if (reply) {
+                response.json({ message: "deleted"})
+            }
+        }
+        response.status(400).end();
+    } catch {
+        response.status(400).json({ error: "couldn't delete" })
+    }
 })
 
 

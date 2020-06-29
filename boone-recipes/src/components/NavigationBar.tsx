@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Navbar, Nav, Form, FormControl, Dropdown } from 'react-bootstrap'
+import { Button, Navbar, Nav, Form, FormControl } from 'react-bootstrap'
 import { useLocation, useHistory } from 'react-router-dom';
 import { User } from '../types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -56,16 +56,10 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
             <Nav.Link href="/login" style={hideLoggedIn} active={useLocation().pathname === "/login"}>Login</Nav.Link>
             {
               user ? 
-              <Dropdown>
-                <Dropdown.Toggle style={{ marginRight: "10px"}} variant="light" id="dropdown-basic">
-                   {user.username}
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                  <Dropdown.Item href={`/profile/${user.username}`}>Profile</Dropdown.Item>
-                  <Dropdown.Item onClick={navLogout}>Logout</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+              <>
+              <Nav.Link href={`/profile/${user.username}`}>Profile</Nav.Link>
+              <Nav.Link onClick={navLogout}>Logout</Nav.Link>
+              </>
               : null
             }
             <Button title="Add new recipe" onClick={showNewModal} variant="outline-primary" style={showLoggedIn}>
