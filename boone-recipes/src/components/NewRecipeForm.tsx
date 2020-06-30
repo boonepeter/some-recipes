@@ -126,7 +126,7 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
           history.push(`/recipes/${response.data.id}`);
         }
       } else {
-        const response = await axios.post(`${apiBaseUrl}/recipes`, recipe);
+        const response = await axios.post(`${apiBaseUrl}/recipes`, newRec);
         if (response.status === 200) {
           if (response.data) {
             history.push(`/recipes/${response.data.id}`);

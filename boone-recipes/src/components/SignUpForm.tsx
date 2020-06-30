@@ -35,10 +35,15 @@ const SignUpForm: React.FC<Props> = ({ appLogin }: Props) => {
       await axios.post(`${apiBaseUrl}/users`, newUser);
       const response = await axios.post(`${apiBaseUrl}/login`, { email: email, password: password})
       if (response.data) {
-        window.localStorage.setItem('some-recipes-user-token', JSON.stringify(response.data));
+          let user: User = {
+              ...response.data.user
+          }
+          user.token = response.data.token;
+          delete user.lists;
+        window.localStorage.setItem('some-recipes-user-token', JSON.stringify(user));
+        appLogin(user as User);
       }
-      appLogin(response.data.user as User);
-      history.push('/recipes');
+      history.push('/');
     };
   return (
       <div style={{ margin: "20px"}}>

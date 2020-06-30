@@ -18,7 +18,6 @@ const LoginForm: React.FC<Props> = ({appLogin}: Props) => {
       event.stopPropagation();
       const response = await axios.post(`${apiBaseUrl}/login`, { email: email, password: password})
       if (response.data) {
-        console.log(response.data, 'login')
         let user: User = {
           ...response.data.user
         };
