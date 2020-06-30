@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Col, Row, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import { apiBaseUrl, parseApiBaseUrl, supportedUrls } from '../constants';
+import { apiBaseUrl, parseApiBaseUrl } from '../constants';
 import { Recipe, User } from '../types'
 import DynamicInput from './DynamicInput';
 import { useHistory } from 'react-router-dom';
@@ -60,23 +60,15 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
 
   const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLink(e.target.value);
-    if (e.target.value === "") {
-      setHostname('');
+    if (e.target.value !== "") {
       setIsSupported(true);
-      return;
-    }
-    try {
-      const host = new URL(e.target.value).hostname;
-      setHostname(host);
-      if (supportedUrls.find(u => u === host || 'www.' + u === host) !== undefined) {
-        setIsSupported(true)
-      } else {
+      try {
+        const host = new URL(e.target.value).hostname;
+        setHostname(host);
+      } catch {
+        setHostname('');
         setIsSupported(false);
       }
-    } catch {
-      setHostname('');
-      setIsSupported(false);
-      return;
     }
   }
 
@@ -84,16 +76,11 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
     setIsImporting(true);
     const recipe = await axios.get(`${parseApiBaseUrl}${link}`);
     if (recipe.status === 200 && recipe.data) {
-      setIngredients(recipe.data.ingredients?.map((i: string) => newItem(i)))
-      setDirections(recipe.data.directions?.map((i: string) => newItem(i)));
-      setTitle(recipe.data.title);
-      setNotes([
-        newItem(`Total time: ${recipe.data.total_time}`),
-        newItem(`Yields: ${recipe.data.yields}`)
-      ])
+      setIngredients(recipe.data.recipeIngredient?.map((i: string) => newItem(i)))
+      setDirections(recipe.data.recipeInstructions?.map((i: string) => newItem(i)));
+      setTitle(recipe.data.name);
       setIsImporting(false);
-      const splitTitle = recipe.data.title.split(" ")
-      setTags(splitTitle.map((t: string) => newItem(t)));
+      setTags(recipe.data.keywords?.map((t: string) => newItem(t)));
       setImage(recipe.data.image);
     }
     setIsImporting(false);
