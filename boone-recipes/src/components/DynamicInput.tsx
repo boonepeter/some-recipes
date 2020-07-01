@@ -56,7 +56,7 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList,
         setItemList([...itemList, { ...newItem() }])
     }
 
-    const isDisabled: boolean = itemList.length === 1;
+    const isDisabled: boolean = itemList.length === 1 && required === true;
     return (
         <div>
             <Form.Label>{title}</Form.Label>

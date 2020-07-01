@@ -25,22 +25,19 @@ listRouter.get('/:id', async (request, response) => {
 })
 
 listRouter.put('/:id', async (request, response) => {
-    const list = await RecipeListSchema.findById(request.params.id);
+    let list = await RecipeListSchema.findById(request.params.id);
     if (!list) {
         response.status(404).end()
     }
-    const recipeId = request.body.recipeId as string;
-    const recipe = await RecipeSchema.findById(recipeId);
-    if (!recipe) {
-        response.status(404).end();
-    }
+    console.log(list)
 
-    const newRecipes = list?.toJSON().recipes.concat(recipe?._id);
     const newList = {
-        title: list?.toJSON().title,
-        recipes: newRecipes
-    };
-    const returned = await RecipeListSchema.findByIdAndUpdate(list?.toJSON().id, newList, { new: true })
+        ...list?.toJSON(),
+        recipes: request.body.recipes.map((r: any) => r.id)
+    }
+    console.log(newList)
+    const returned = await RecipeListSchema.findByIdAndUpdate(request.params.id, newList, { new: true });
+
     response.json(returned?.toJSON());
 })
 

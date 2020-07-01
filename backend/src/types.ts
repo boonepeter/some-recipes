@@ -11,16 +11,26 @@ export interface Review {
 
 export interface Recipe {
     title: string;
-    description: string;
+    description?: string;
     id: string;
     ingredients: string[];
     directions: string[];
     link?: string;
     notes?: string[];
-    reviews: string[];
-    tags: string[];
+    reviews?: string[];
+    tags?: string[];
     imageURL?: string;
     userId?: string;
+    user?: User;
+    author?: string;
+    cookTime?: number;
+    prepTime?: number;
+    totalTime?: number;
+    recipeCategory?: string[];
+    recipeCuisine?: string[];
+    nutrition?: object;
+    yield?: string;
+    preheat?: number;
 }
 
 export interface RecipeList {
@@ -30,6 +40,7 @@ export interface RecipeList {
 
 export interface User {
     username: string;
+    id?: string;
     email: string;
     name: string;
     lists: RecipeList[];

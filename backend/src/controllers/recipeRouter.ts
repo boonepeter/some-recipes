@@ -31,7 +31,6 @@ recipeRouter.post('/', async (request, response) => {
 recipeRouter.get('/:id', async (request, response) => {
     const recipe = await RecipeSchema.findById(request.params.id).populate('user');
     if (recipe) {
-        console.log(recipe.toJSON());
         response.json(recipe.toJSON());
     } else {
         response.status(404).end()

@@ -11,7 +11,6 @@ import NewRecipe from './NewRecipe';
 
 interface Props {
   loggedInUser?: User|null|undefined;
-
 }
 
 const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
@@ -29,23 +28,14 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
       const response = await axios.get<Recipe>(`${apiBaseUrl}/recipes/${id}`);
       if (response.data) {
         setRecipe(response.data)
-        console.log('recipe', response.data)
-        console.log('logged in', loggedInUser);
-        if (response.data.user && loggedInUser?.id === response.data.user.id) {
+        console.log(response.data, loggedInUser)
+        if (response.data.user?.id && loggedInUser?.id === response.data.user.id) {
           setCanEdit(true);
         }
       }
     };
     getRecipe();
-    // eslint-disable-next-line
-  }, [id]);
-
-  React.useEffect(() => {
-    if (recipe?.user && loggedInUser?.id === recipe.user.id) {
-      setCanEdit(true);
-    }
-    // eslint-disable-next-line
-  }, [loggedInUser])
+  }, [id, loggedInUser]);
 
   React.useEffect(() => {
     const favList = loggedInUser?.lists.find(l => l.title === "Favorites")
@@ -57,10 +47,16 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
   }, [loggedInUser, id])
 
   const saveRecipe = async () => {
-    const listId = loggedInUser?.lists.find(l => l.title === "Favorites");
-    const response = await axios.put(`${apiBaseUrl}/lists/${listId?.id}`, { recipeId: recipe?.id });
+    let list = loggedInUser?.lists.find(l => l.title === "Favorites");
+    if (isSaved && list?.recipes) {
+      list.recipes = list?.recipes?.filter(r => r.id !== recipe?.id);
+    }
+    if (!isSaved && list?.recipes && recipe) {
+      list.recipes = list.recipes.concat(recipe);
+    }
+    const response = await axios.put(`${apiBaseUrl}/lists/${list?.id}`, list);
     if (response.status === 200) {
-      setIsSaved(true);
+      setIsSaved(!isSaved);
     }
   }
   
@@ -137,9 +133,11 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
         </div>
         : null
       }
-      <div>
+
+      <br></br>
+      <p>
           {recipe.description}
-      </div>
+      </p>
       <br></br>
       {
         recipe.imageURL ?

@@ -11,16 +11,26 @@ export interface Review {
 
 export interface Recipe {
     title: string;
-    description: string;
+    description?: string;
     id: string;
     ingredients: string[];
     directions: string[];
-    notes?: string[];
     link?: string;
-    reviews: string[];
-    tags: string[];
-    user?: User;
+    notes?: string[];
+    reviews?: string[];
+    tags?: string[];
     imageURL?: string;
+    userId?: string;
+    user?: User;
+    author?: string;
+    cookTime?: number;
+    prepTime?: number;
+    totalTime?: number;
+    recipeCategory?: string[];
+    recipeCuisine?: string[];
+    nutrition?: object;
+    yield?: string;
+    preheat?: number;
 }
 
 export interface RecipeList {

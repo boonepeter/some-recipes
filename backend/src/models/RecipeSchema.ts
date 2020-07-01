@@ -60,6 +60,41 @@ const recipeSchema = new mongoose.Schema({
   totalMinutes: {
     type: Number,
     required: false
+  },
+  author: {
+    type: String,
+    required: false,
+  },
+  cookTime: {
+    type: Number,
+    required: false,
+  },
+  prepTime: {
+    type: Number,
+    required: false
+  },
+  totalTime: {
+    type: Number,
+    required: false
+  },
+  recipeCategory: [
+    {
+      type: String,
+      required: false
+    }
+  ],
+  recipeYield: {
+    type: String,
+    required: false
+  },
+  nutrition: {
+    type: Map,
+    of: String,
+    required: false
+  },
+  preheat: {
+    type: Number,
+    required: false
   }
 })
 

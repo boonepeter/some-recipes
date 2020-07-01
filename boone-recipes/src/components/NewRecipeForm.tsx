@@ -21,11 +21,15 @@ interface Props {
 }
 
 const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Props) => {
-  console.log(recipe)
   const history = useHistory();
   const [title, setTitle] = useState(recipe?.title ? recipe.title : '');
   const [description, setDescription] = useState(recipe?.description ? recipe.description : '');
   const [link, setLink] = useState(recipe?.link);
+  const [totalTime, setTotalTime] = useState(0);
+  const [cookTime, setCookTime] = useState(0);
+  const [prepTime, setPrepTime] = useState(0);
+  const [preheat, setPreheat] = useState(0);
+  const [author, setAuthor] = useState('');
 
   const newItem = (value: string): Item => {
     return { value: value, id: uuid() }
@@ -46,7 +50,7 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
     : []
   );
   const [tags, setTags] = useState<Item[]>(
-    recipe ? 
+    recipe?.tags ? 
     recipe.tags.map(i => newItem(i))
     : []
   );
@@ -82,6 +86,10 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
       setIsImporting(false);
       setTags(recipe.data.keywords?.map((t: string) => newItem(t)));
       setImage(recipe.data.image);
+      setCookTime(recipe.data.cookTime ? recipe.data.cookTime : 0);
+      setTotalTime(recipe.data.totalTime ? recipe.data.totalTime : 0);
+      setPrepTime(recipe.data.prepTime ? recipe.data.prepTime : 0);
+      setAuthor(recipe.data.author);
     }
     setIsImporting(false);
   }
@@ -96,14 +104,18 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
         tags: tags.flatMap(t => t.value === "" ? [] : t.value),
         notes: notes.flatMap(n => n.value === "" ? [] : n.value),
         link: link,
+        userId: loggedInUser ? loggedInUser.id : undefined,
         user: loggedInUser ? loggedInUser : undefined,
-        imageURL: image === "" ? undefined : image
+        imageURL: image === "" ? undefined : image,
+        author: author,
+        prepTime: prepTime,
+        cookTime: cookTime,
+        totalTime: totalTime
       }
       event.preventDefault();
       event.stopPropagation();
       // TODO: add toast notification
       if (recipe) {
-        console.log(loggedInUser);
         const response = await axios.put(`${apiBaseUrl}/recipes/${recipe.id}`, {
           recipe: newRec,
           token: loggedInUser?.token
@@ -126,12 +138,20 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
     return (
       <Form onSubmit={handleSubmit}>
         <Form.Group>
-          <Form.Label>Title</Form.Label>
+          <Form.Label>Title *</Form.Label>
           <Form.Control type="text"
             required
             placeholder="Recipe title"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
+            />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Author</Form.Label>
+          <Form.Control type="text"
+            value={author}
+            required={false}
+            onChange={({ target }) => setAuthor(target.value)}
             />
         </Form.Group>
         <Form.Group>
@@ -172,15 +192,50 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
           <Form.Label>Description</Form.Label>
           <Form.Control as="textarea"
             rows={3}
+            required={false}
             value={description}
             placeholder="Short description..."
             onChange={({ target }) => setDescription(target.value)}
             />
         </Form.Group>
-        <DynamicInput title="Ingredients" required startNum={3} itemList={ingredients} setItemList={setIngredients}/>
-        <DynamicInput title="Directions" large required startNum={3} itemList={directions} setItemList={setDirections}/>
-        <DynamicInput title="Tags" required itemList={tags} setItemList={setTags}/>
+        <DynamicInput title="Ingredients *" required startNum={3} itemList={ingredients} setItemList={setIngredients}/>
+        <DynamicInput title="Directions *" large required startNum={3} itemList={directions} setItemList={setDirections}/>
+        <DynamicInput title="Tags *" required itemList={tags} setItemList={setTags}/>
         <DynamicInput title="Notes" itemList={notes} setItemList={setNotes}/>
+        <Form.Group>
+          <Form.Label>Total Time (minutes)</Form.Label>
+          <Form.Control type="number"
+            value={totalTime}
+            required={false}
+            onChange={({ target }) => setTotalTime(+target.value)}
+            />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Prep Time (minutes)</Form.Label>
+          <Form.Control type="number"
+            value={prepTime}
+            required={false}
+            onChange={({ target }) => setPrepTime(+target.value)}
+            />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Cook Time (minutes)</Form.Label>
+          <Form.Control type="number"
+            value={cookTime}
+            required={false}
+            onChange={({ target }) => setCookTime(+target.value)}
+            />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Preheat Temp (°F)</Form.Label>
+          <Form.Control type="number"
+            value={preheat}
+            required={false}
+            onChange={({ target }) => setPreheat(+target.value)}
+            />
+        </Form.Group>
+
+
         <div className="container" style={{ marginTop: "20px", marginBottom: "20px"}}>
           <Button type="submit" size="lg" block>
           {

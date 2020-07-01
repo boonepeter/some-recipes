@@ -39,7 +39,6 @@ const SignUpForm: React.FC<Props> = ({ appLogin }: Props) => {
               ...response.data.user
           }
           user.token = response.data.token;
-          delete user.lists;
         window.localStorage.setItem('some-recipes-user-token', JSON.stringify(user));
         appLogin(user as User);
       }
