@@ -45,7 +45,7 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList,
         if (itemList === undefined || itemList?.length === 0) {
             setItemList([...Array(startNum)].map((x, i) => newItem()));
         }
-    }, [startNum, setItemList])
+    }, [startNum, setItemList, itemList])
 
     const removeItem = (id: string) => {
         setItemList(itemList ? itemList.filter(i => i.id !== id) : [])
