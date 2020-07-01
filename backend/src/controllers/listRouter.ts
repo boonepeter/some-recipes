@@ -29,13 +29,11 @@ listRouter.put('/:id', async (request, response) => {
     if (!list) {
         response.status(404).end()
     }
-    console.log(list)
 
     const newList = {
         ...list?.toJSON(),
         recipes: request.body.recipes.map((r: any) => r.id)
     }
-    console.log(newList)
     const returned = await RecipeListSchema.findByIdAndUpdate(request.params.id, newList, { new: true });
 
     response.json(returned?.toJSON());

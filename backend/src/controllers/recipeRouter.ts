@@ -20,7 +20,6 @@ recipeRouter.post('/', async (request, response) => {
             const newRecipe = new RecipeSchema({ ...request.body, user: user })
             const saved = await newRecipe.save();
             response.json(saved.toJSON());
-            console.log('saved', saved.toJSON())
         }
     }
     const newRecipe = new RecipeSchema({ ...request.body });

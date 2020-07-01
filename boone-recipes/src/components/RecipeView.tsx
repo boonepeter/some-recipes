@@ -28,7 +28,6 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
       const response = await axios.get<Recipe>(`${apiBaseUrl}/recipes/${id}`);
       if (response.data) {
         setRecipe(response.data)
-        console.log(response.data, loggedInUser)
         if (response.data.user?.id && loggedInUser?.id === response.data.user.id) {
           setCanEdit(true);
         }

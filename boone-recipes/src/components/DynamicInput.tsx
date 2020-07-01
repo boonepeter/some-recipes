@@ -21,7 +21,7 @@ interface Props {
 }
 
 const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList, required, type, large }: Props) => {
-    
+
     const newItem = (): Item => {
         return { 
             value: "", 
@@ -30,7 +30,7 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList,
     }
 
     const updateItem = (id: string, value: string) => {
-        const index = itemList.findIndex(i => i.id === id)
+        const index = itemList?.findIndex(i => i.id === id)
         let items = [...itemList];
         let item = { ...itemList[index] };
         if (!item) {
@@ -42,21 +42,20 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList,
     }
 
     React.useEffect(() => {
-        if (itemList.length === 0) {
+        if (itemList === undefined || itemList?.length === 0) {
             setItemList([...Array(startNum)].map((x, i) => newItem()));
         }
-        // eslint-disable-next-line
     }, [startNum, setItemList])
 
     const removeItem = (id: string) => {
-        setItemList(itemList.filter(i => i.id !== id))
+        setItemList(itemList ? itemList.filter(i => i.id !== id) : [])
     }
 
     const addItem = () => {
         setItemList([...itemList, { ...newItem() }])
     }
 
-    const isDisabled: boolean = itemList.length === 1 && required === true;
+    const isDisabled: boolean = itemList?.length === 1 && required === true;
     return (
         <div>
             <Form.Label>{title}</Form.Label>

@@ -24,7 +24,7 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
   const history = useHistory();
   const [title, setTitle] = useState(recipe?.title ? recipe.title : '');
   const [description, setDescription] = useState(recipe?.description ? recipe.description : '');
-  const [link, setLink] = useState(recipe?.link);
+  const [link, setLink] = useState(recipe?.link ? recipe.link : '');
   const [totalTime, setTotalTime] = useState(0);
   const [cookTime, setCookTime] = useState(0);
   const [prepTime, setPrepTime] = useState(0);
@@ -80,16 +80,27 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
     setIsImporting(true);
     const recipe = await axios.get(`${parseApiBaseUrl}${link}`);
     if (recipe.status === 200 && recipe.data) {
-      setIngredients(recipe.data.recipeIngredient?.map((i: string) => newItem(i)))
-      setDirections(recipe.data.recipeInstructions?.map((i: string) => newItem(i)));
-      setTitle(recipe.data.name);
+      setIngredients(
+        recipe?.data?.recipeIngredient ? 
+        recipe.data.recipeIngredient.map((i: string) => newItem(i))
+        : []
+      );
+      setDirections(
+        recipe?.data?.recipeInstructions ? 
+        recipe.data.recipeInstructions?.map((i: string) => newItem(i))
+        : []
+      );
+      setTitle(recipe.data.name ? recipe.data.name : '');
       setIsImporting(false);
-      setTags(recipe.data.keywords?.map((t: string) => newItem(t)));
-      setImage(recipe.data.image);
+      setTags(recipe?.data?.keywords ? 
+        recipe.data.keywords?.map((t: string) => newItem(t))
+        : []
+        );
+      setImage(recipe.data.image ? recipe.data.image : '');
       setCookTime(recipe.data.cookTime ? recipe.data.cookTime : 0);
       setTotalTime(recipe.data.totalTime ? recipe.data.totalTime : 0);
       setPrepTime(recipe.data.prepTime ? recipe.data.prepTime : 0);
-      setAuthor(recipe.data.author);
+      setAuthor(recipe.data.author ? recipe.data.author : '');
     }
     setIsImporting(false);
   }
