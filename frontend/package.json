@@ -1,6 +1,7 @@
 {
-  "name": "boone-recipes",
+  "name": "some-recipes-frontend",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-common-types": "^0.2.29",

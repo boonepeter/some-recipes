@@ -4,6 +4,15 @@ The backend for this site is written in Typescript and uses Express on Node.js. 
 
 The site is deployed on Azure's Web App Service [here](https://some-recipes.azurewebsites.net).
 
+## Run locally
+
+```bash
+git clone https://github.com/boonepeter/some-recipes
+cd some-recipes/backend
+npm install
+npm run dev
+```
+
 ## Backend API
 
 ### `GET /api/recipes`
@@ -82,7 +91,7 @@ Add new list
 
 Adds a recipe to the specified list. Recipe is passed in body.
 
-## Note on routeing
+## Note on routing
 
 The backend routes the APIs, and everything else gets passed to the frontend. Since I'm using React, all of the frontend must be passed through `index.html` because the frontend routing is virtual. That is done like this:
 

@@ -10,7 +10,8 @@ To install and run locally:
 
 ```bash
 git clone https://github.com/boonepeter/some-recipes
-cd boone-recipes/boone-recipes
+cd some-recipes/frontend
+npm install
 npm start
 ```
 
@@ -21,4 +22,3 @@ npm run build
 ```
 
 Then copy build folder to the root directory of the backend.
-

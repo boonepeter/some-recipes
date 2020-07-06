@@ -1,7 +1,7 @@
 {
-  "name": "boone-recipes-backend",
+  "name": "some-recipes-backend",
   "version": "0.1.0",
-  "description": "The backend to boone-recipes site.",
+  "description": "The backend to some-recipes site.",
   "main": "index.js",
   "devDependencies": {
     "@types/cors": "^2.8.6",

@@ -43,7 +43,7 @@ jobs:
         npm run build
         rm -rf build 
         rm -rf dist/build
-        cd ../boone-recipes
+        cd ../frontend
         npm install
         npm run build --prod
         cp -r build ../backend/
