@@ -16,6 +16,8 @@ import ProfileView from './components/ProfileView';
 import NewRecipe from './components/NewRecipe';
 import { User } from './types';
 import { Jumbotron, Button } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const App: React.FC = () => {
   const [ recipeList, setRecipeList ] = useState(null)
@@ -86,29 +88,40 @@ const App: React.FC = () => {
             <ProfileView loggedInUser={user}/>
           </Route>
           <Route path="/">
-                <Jumbotron >
-                <h2>Hate scrolling through blog posts to find a recipe?</h2>
-                <p/>
-                <p>
-                  Me too. Try out this simple recipe site!
-                </p>
-                <p>
-                  {
-                    user ? 
-                    null
-                    :
-                    <>
-                      <Button variant="primary" href="/signup">Sign up</Button>
-                      {'   '}
-                      <Button variant="outline-primary" href="/login">
-                        Login
-                      </Button>
-                      { ' ' }
-                    </>
-                  }
-                  <Button variant="outline-primary" href="/recipes">Browse Recipes</Button>
-                </p>
-              </Jumbotron>
+            {
+              user ?
+              null
+              :
+              <Jumbotron >
+              <h1>No more annoying ads or long blog posts</h1>
+              <p></p>
+              <h2>Just some recipes</h2>
+              <p/>
+              <p>
+                Keep all of the recipes you love in one place. Import from across the web or upload your own and come back to this simple site when you are ready to make them.
+              </p>
+              <p></p>
+              <p>
+                Sign up or login and click the  {
+                  <Button variant="outline-primary">
+                    <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
+                  </Button>}  button to add your own recipes.
+              </p>
+              <p></p>
+              <p>
+                  <>
+                    <Button variant="primary" href="/signup">Sign up</Button>
+                    {'   '}
+                    <Button variant="outline-primary" href="/login">
+                      Login
+                    </Button>
+                    { ' ' }
+                  </>
+              </p>
+            </Jumbotron>
+
+
+            }
             <RecipeList recipes={recipeList} />
           </Route>
         </Switch>

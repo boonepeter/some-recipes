@@ -25,11 +25,11 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
   const [title, setTitle] = useState(recipe?.title ? recipe.title : '');
   const [description, setDescription] = useState(recipe?.description ? recipe.description : '');
   const [link, setLink] = useState(recipe?.link ? recipe.link : '');
-  const [totalTime, setTotalTime] = useState(0);
-  const [cookTime, setCookTime] = useState(0);
-  const [prepTime, setPrepTime] = useState(0);
-  const [preheat, setPreheat] = useState(0);
-  const [author, setAuthor] = useState('');
+  const [totalTime, setTotalTime] = useState(recipe?.totalTime ? recipe.totalTime : 0);
+  const [cookTime, setCookTime] = useState(recipe?.cookTime ? recipe.cookTime : 0);
+  const [prepTime, setPrepTime] = useState(recipe?.prepTime ? recipe.prepTime : 0);
+  const [preheat, setPreheat] = useState(recipe?.preheat ? recipe.preheat : 0);
+  const [author, setAuthor] = useState(recipe?.author ? recipe.author : '');
 
   const newItem = (value: string): Item => {
     return { value: value, id: uuid() }

@@ -41,7 +41,7 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
-          <Form inline className="ml-auto mr-auto" onSubmit={searchRecipes}>
+          <Form inline className="ml-auto mr-auto" onSubmit={searchRecipes} style={{ marginLeft: "20px", marginRight: "20px", marginTop: "10px"}}>
             <FormControl 
               type="text" 
               placeholder="Search" 
@@ -50,6 +50,7 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
             />
           </Form>
           <Nav className="ml-auto" >
+            
             <Nav.Link href="/" active={useLocation().pathname === "/"}>Home</Nav.Link>
             <Nav.Link href="/recipes" active={useLocation().pathname === "/recipes"}>Browse Recipes</Nav.Link>
             <Nav.Link href="/signup" style={hideLoggedIn} active={useLocation().pathname === "/signup"}>Sign Up</Nav.Link>
@@ -59,12 +60,17 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
               <>
               <Nav.Link href={`/profile/${user.username}`}>Profile</Nav.Link>
               <Nav.Link onClick={navLogout}>Logout</Nav.Link>
+              <Button title="Add new recipe" onClick={showNewModal} variant="outline-primary">
+                <FontAwesomeIcon icon={faPlus}/>
+              </Button>
               </>
-              : null
+              : 
+              <Button title="Login to add recipes" onClick={showNewModal} variant="outline-primary" disabled>
+                <FontAwesomeIcon icon={faPlus}/>
+              </Button>
+
             }
-            <Button title="Add new recipe" onClick={showNewModal} variant="outline-primary" style={showLoggedIn}>
-              <FontAwesomeIcon icon={faPlus}/>
-            </Button>
+            
           </Nav>
         </Navbar.Collapse>
         </div>

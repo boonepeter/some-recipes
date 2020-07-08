@@ -38,6 +38,9 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList,
         }
         item.value = value;
         items[index] = item;
+        if (index === itemList?.length - 1) {
+            items = [...items, { ...newItem()}];
+        }
         setItemList(items);
     }
 
@@ -61,7 +64,7 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList,
             <Form.Label>{title}</Form.Label>
             <Container style={{ marginBottom: "20px"}}>
             {
-                itemList.map(i => (
+                itemList.map((i, index) => (
                         <Row key={i.id} >
                         <Col >
                             <Form.Group>
@@ -70,14 +73,14 @@ const DynamicInput: React.FC<Props> = ({ title, startNum, itemList, setItemList,
                                         <Form.Control
                                         as="textarea"
                                         rows={2}
-                                        required={required}
+                                        required={required && index === 0}
                                         value={i.value}
                                         onChange={({ target }) => updateItem(i.id, target.value)}
                                         />
                                     :
                                     <Form.Control
                                         type={type}
-                                        required={required}
+                                        required={required && index === 0}
                                         value={i.value}
                                         onChange={({ target }) => updateItem(i.id, target.value)}
                                         />
