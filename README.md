@@ -4,7 +4,7 @@
 
 This site is hosted [here on Azure's Web App Service](https://some-recipes.azurewebsites.net/recipes) and uses GitHub Actions to build and deploy.
 
-## [Frontend]((https://github.com/boonepeter/some-recipes/tree/master/frontend))
+## [Frontend](https://github.com/boonepeter/some-recipes/tree/master/frontend)
 
 The frontend of this website uses React, written in Typescript.
 
@@ -106,7 +106,7 @@ RecipeList {
 }
 ```
 
-#### `GET /api/search?type=<type>&terms=<term>
+#### `GET /api/search?type=<type>&terms=<term>`
 
 Searches for recipes. `<type>` can be `title` or `tag`. `<term>` is what is used to search.
 
