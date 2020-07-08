@@ -16,7 +16,6 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
   const [ searchTerm, setSearchTerm ] = useState('');
   
   const hideLoggedIn = user !== null ? { display: "none" } : undefined;
-  const showLoggedIn = user === null ? { display: "none" } : undefined;
 
   const searchRecipes = (event: React.FormEvent<EventTarget>) => {
     history.push(`/search?type=title&terms=${searchTerm}`)
