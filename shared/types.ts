@@ -49,6 +49,15 @@ export interface User {
     token?: string;
 }
 
+export interface UserToken {
+    email: string;
+    id: string;
+}
+
+export interface UserWithHash extends User {
+    passwordHash: string;
+}
+
 export interface NewUser extends Omit<User, 'id'> {
     password: string
 }
