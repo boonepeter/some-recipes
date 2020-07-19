@@ -18,8 +18,6 @@ import { User } from './types';
 import { Jumbotron, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Recipe as OutRecipe } from '../../shared/types';
-import { Recipe as ORecipe} from './types';
 
 const App: React.FC = () => {
   const [ recipeList, setRecipeList ] = useState(null)
