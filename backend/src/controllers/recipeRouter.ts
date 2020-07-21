@@ -3,7 +3,6 @@ import RecipeSchema from '../models/RecipeSchema';
 import UserSchema from '../models/UserSchema';
 import logger from '../utils/logger';
 import jwt from 'jsonwebtoken';
-import { UserToken, Recipe } from '../types';
 
 const recipeRouter = express.Router();
 
