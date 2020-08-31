@@ -3,78 +3,52 @@ import RecipeSchema from '../models/RecipeSchema';
 import UserSchema from '../models/UserSchema';
 import logger from '../utils/logger';
 import jwt from 'jsonwebtoken';
+import { getRecipe, deleteRecipe, updateRecipe, createRecipe, getAllRecipes } from '../services/recipeService';
+import { isAuthorized } from '../services/authentication';
 
 const recipeRouter = express.Router();
 
 recipeRouter.get('/', async (_req, response) => {
-    const recipes = await RecipeSchema.find({});
-    logger.info(recipes.length);
-    response.json(recipes.map(r => r.toJSON()));
+    response.json(await getAllRecipes());
 })
 
 recipeRouter.post('/', async (request, response) => {
-    if (request.body?.user?.id) {
-        const user = await UserSchema.findById(request.body.user.id);
-        if (user) {
-            const newRecipe = new RecipeSchema({ ...request.body, user: user })
-            const saved = await newRecipe.save();
-            response.json(saved.toJSON());
-        }
+    const recipe = await createRecipe(request.body, request.body.user.id);
+    if (recipe) {
+        response.json(recipe);
+    } else {
+        response.status(500).end();
     }
-    const newRecipe = new RecipeSchema({ ...request.body });
-    await newRecipe.save();
-    response.status(200).end();
 })
 
 recipeRouter.get('/:id', async (request, response) => {
-    const recipe = await RecipeSchema.findById(request.params.id).populate('user');
-    if (recipe) {
-        response.json(recipe.toJSON());
-    } else {
-        response.status(404).end()
-    }
+    response.json(await getRecipe(request.params.id));
 })
 
 recipeRouter.put('/:id', async (request, response) => {
-    const token = request.body.token;
-    if (!token || !request.body.recipe) {
-        response.status(401).json({ error: "No authorization token" })
-    }
-    try {
-        const recipe = await RecipeSchema.findById(request.params.id);
-        const userForToken: any = jwt.verify(token, process.env.SECRET as string);
-        if (userForToken?.id == recipe?.toJSON().user) {
-            const user = await UserSchema.findById(userForToken.id);
-            const updated = await RecipeSchema.findByIdAndUpdate(
-                request.params.id, 
-                {...request.body.recipe, user: user}, 
-                { new: true});
-            response.json(updated?.toJSON()).end();
+    const recipe = await getRecipe(request.params.id);
+    if (recipe && recipe.user?.userId) {
+        const authorized = await isAuthorized(request, recipe.user.userId);
+        console.log(authorized);
+        if (authorized && recipe.user?.userId) {
+            const updated = await updateRecipe(recipe.recipeId, request.body.recipe, recipe.user?.userId);
+            response.json(updated);
         }
-    } catch {
-        response.status(400).json({ error: "some error"})
     }
 })
 
 recipeRouter.delete('/:id', async (request, response) => {
-    const token = request.body.token;
-    if (!token) {
-        response.status(401).json({ error: "No authorization token" }).end()
-    }
-    try {
-        const recipe = await RecipeSchema.findById(request.params.id);
-        const userForToken: any = jwt.verify(token, process.env.SECRET as string);
-        if (userForToken.id && recipe && userForToken.id == recipe.toJSON().user ) {
-            const reply = await RecipeSchema.findByIdAndDelete(request.params.id);
-            if (reply) {
-                response.json({ message: "deleted"})
-            }
+    const recipe = await getRecipe(request.params.id);
+    if (recipe && recipe.recipeId) {
+        const authorized = await isAuthorized(request, recipe.recipeId);
+        if (authorized) {
+            await deleteRecipe(recipe.recipeId);
+            response.json({ message: "deleted recipe" });
+        } else {
+            response.status(401).json({ error: "not authorized"}).end();
         }
-        response.status(400).end();
-    } catch {
-        response.status(400).json({ error: "couldn't delete" })
     }
-})
+});
 
 
 export default recipeRouter

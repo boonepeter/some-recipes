@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Form, Button, Col, Row, Spinner } from 'react-bootstrap';
+import { Form, Button, Col, Row, Spinner, Image } from 'react-bootstrap';
 import axios from 'axios';
 import { apiBaseUrl, parseApiBaseUrl } from '../constants';
-import { Recipe, User } from '../types'
+import { Recipe, User, NewRecipe } from '../types'
 import DynamicInput from './DynamicInput';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
@@ -12,15 +12,15 @@ interface Item {
   id: string;
 }
 
-type NewRecipe = Omit<Recipe, 'id'>;
 
 interface Props {
   handleClose: () => void;
   loggedInUser: User | null | undefined;
   recipe?: Recipe;
+  setRecipe?: React.Dispatch<React.SetStateAction<Recipe | null>>;
 }
 
-const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Props) => {
+const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe, setRecipe}: Props) => {
   const history = useHistory();
   const [title, setTitle] = useState(recipe?.title ? recipe.title : '');
   const [description, setDescription] = useState(recipe?.description ? recipe.description : '');
@@ -30,6 +30,7 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
   const [prepTime, setPrepTime] = useState(recipe?.prepTime ? recipe.prepTime : 0);
   const [preheat, setPreheat] = useState(recipe?.preheat ? recipe.preheat : 0);
   const [author, setAuthor] = useState(recipe?.author ? recipe.author : '');
+  const [imageFile, setImageFile] = useState(null);
 
   const newItem = (value: string): Item => {
     return { value: value, id: uuid() }
@@ -105,6 +106,10 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
     setIsImporting(false);
   }
 
+  const handleImageChange = () => {
+    
+  }
+
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     const newRec: NewRecipe = {
         ingredients: ingredients.flatMap(i => i.value === "" ? [] : i.value),
@@ -115,7 +120,7 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
         tags: tags.flatMap(t => t.value === "" ? [] : t.value),
         notes: notes.flatMap(n => n.value === "" ? [] : n.value),
         link: link,
-        userId: loggedInUser ? loggedInUser.id : undefined,
+        userId: loggedInUser ? loggedInUser.userId : undefined,
         user: loggedInUser ? loggedInUser : undefined,
         imageURL: image === "" ? undefined : image,
         author: author,
@@ -127,13 +132,12 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
       event.stopPropagation();
       // TODO: add toast notification
       if (recipe) {
-        const response = await axios.put(`${apiBaseUrl}/recipes/${recipe.id}`, {
+        const response = await axios.put(`${apiBaseUrl}/recipes/${recipe.recipeId}`, {
           recipe: newRec,
           token: loggedInUser?.token
         });
-        if (response.data) {
-          history.push('/')
-          history.push(`/recipes/${response.data.id}`);
+        if (response.data && setRecipe) {
+          setRecipe(response.data);
         }
       } else {
         const response = await axios.post(`${apiBaseUrl}/recipes`, newRec);
@@ -186,17 +190,14 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe}: Pro
               </Button>
             </Col>
           </Row>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Image</Form.Label>
+          <Form.File id="recipePicture" onChange={handleImageChange}/>
           {
-            isSupported || !hostName ?
-              null :
-              <Row>
-                <Col>
-                    <p>
-                      Sorry, {hostName ? hostName : "that domain"} is not currently supported.{ ' ' }
-                      <a href="https://github.com/boonepeter/some-recipes/issues" target="_blank" rel="noopener noreferrer">Suggest it here</a>
-                    </p>
-                </Col>
-              </Row>
+            image ? 
+            <Image src={image} height="100px" style={{margin: "5px"}}/>
+            : null
           }
         </Form.Group>
         <Form.Group>

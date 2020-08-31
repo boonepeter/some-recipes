@@ -1,7 +1,8 @@
 
 export let apiBaseUrl = '';
 export let baseUrl = '';
-export const parseApiBaseUrl = "https://recipe-parser.azurewebsites.net/api/parse?url="
+export const parseApiBaseUrl = "https://recipe-parser.azurewebsites.net/api/parse?url=";
+export const blobBaseUrl = "https://boonerecipes.blob.core.windows.net/recipe-container/";
 if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     apiBaseUrl = 'http://localhost:3003/api'
     baseUrl = 'http://localhost:3001';
