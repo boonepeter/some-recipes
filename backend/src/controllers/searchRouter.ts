@@ -23,7 +23,7 @@ searchRouter.get('/', async (request, response) => {
                 break;
             case "title":
                 logger.info("title", request.query.terms);
-                const titleMatch = await RecipeSchema.find({ "title": { "$regex": request.query.terms, "$options": "i"}})
+                const titleMatch = await RecipeSchema.find({ "title": { "$regex": request.query.terms as string, "$options": "i"}})
                 response.json(titleMatch);
                 break;
             default:

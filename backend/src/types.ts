@@ -48,6 +48,7 @@ export interface User {
     userId: string;
     token?: string;
     profilePicUrl?: string;
+    passwordHash?: string;
 }
 
 export interface UserToken {
