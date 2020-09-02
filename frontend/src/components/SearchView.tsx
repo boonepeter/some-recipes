@@ -54,7 +54,7 @@ const SearchView: React.FC = () => {
         <CardColumns>
             {
                 recipes.map((r: Recipe) => (
-                <Preview key={r.id} recipe={r}/>
+                <Preview key={r.recipeId} recipe={r}/>
             ))}
         </CardColumns>
       </Container>

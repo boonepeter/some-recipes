@@ -1,10 +1,9 @@
 import React from 'react';
 import { Recipe } from '../types';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Card, Button } from 'react-bootstrap';
 
 const Preview: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
-  const history = useHistory();
   const trimmedText = (): string => {
     if (!recipe.description) {
       return "...";
@@ -15,24 +14,20 @@ const Preview: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     return recipe.description;
   }
 
-  const handleClick = () => {
-    history.push(`/recipes/${recipe.id}`)
-  }
-
   return (
-    <Card style={{ minHeight: "150px"}} onClick={handleClick}>
+    <Card style={{ minHeight: "150px"}} >
       <Card.Body>
         <Card.Title>
-          <Link to={`/recipes/${recipe.id}`}>{recipe.title}</Link>
+          <Link to={`/recipes/${recipe.recipeId}`}>{recipe.title}</Link>
         </Card.Title>
         {
           recipe.imageURL ? 
-          <a href={`/recipes/${recipe.id}`}>
+          <a href={`/recipes/${recipe.recipeId}`}>
             <Card.Img src={recipe.imageURL} />
           </a>
           : <>
               <Card.Text>{trimmedText()}</Card.Text>
-              <Button href={`/recipes/${recipe.id}`}>View</Button>            
+              <Button href={`/recipes/${recipe.recipeId}`}>View</Button>            
             </>
         }
       </Card.Body>

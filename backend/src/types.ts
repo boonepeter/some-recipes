@@ -12,7 +12,7 @@ export interface Review {
 export interface Recipe {
     title: string;
     description?: string;
-    id: string;
+    recipeId: string;
     ingredients: string[];
     directions: string[];
     link?: string;
@@ -45,8 +45,9 @@ export interface User {
     name: string;
     lists: RecipeList[];
     friends: User[];
-    id: string;
+    userId: string;
     token?: string;
+    profilePicUrl?: string;
 }
 
 export interface UserToken {
@@ -58,6 +59,6 @@ export interface UserWithHash extends User {
     passwordHash: string;
 }
 
-export interface NewUser extends Omit<User, 'id'> {
+export interface NewUser extends Omit<User, 'userId'> {
     password: string
 }

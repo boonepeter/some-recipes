@@ -1,5 +1,6 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, model, Model, Document } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
+import { Recipe } from '../types';
 
 const recipeSchema = new mongoose.Schema({
   title: {
@@ -98,16 +99,23 @@ const recipeSchema = new mongoose.Schema({
   }
 })
 
+
+
+interface IRecipe extends Document, Recipe {
+
+}
+
 recipeSchema.plugin(uniqueValidator)
 recipeSchema.set('toJSON', {
     transform: (_document, returnedObject) => {
-      returnedObject.id = returnedObject._id.toString()
+      returnedObject.id = returnedObject._id.toString();
+      returnedObject.recipeId = returnedObject.id;
       delete returnedObject._id
       delete returnedObject.__v
     }
   })
 
 
-const Recipe = mongoose.model('Recipe', recipeSchema)
+const RecipeModel: Model<IRecipe> = model<IRecipe>('Recipe', recipeSchema)
 
-export default Recipe
+export default RecipeModel

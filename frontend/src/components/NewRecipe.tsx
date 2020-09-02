@@ -9,10 +9,10 @@ interface Props {
   show: boolean;
   loggedInUser: User | null | undefined;
   recipe?: Recipe;
+  setRecipe?: React.Dispatch<React.SetStateAction<Recipe | null>>;
 }
 
-const NewRecipeModal: React.FC<Props> = ({ handleClose, handleShow, show, loggedInUser, recipe }: Props) => {
-
+const NewRecipeModal: React.FC<Props> = ({ handleClose, handleShow, show, loggedInUser, recipe, setRecipe}: Props) => {
     return (
         <Modal size="lg" centered show={show} animation={false} onHide={handleClose} >
           <Modal.Header closeButton>
@@ -21,7 +21,7 @@ const NewRecipeModal: React.FC<Props> = ({ handleClose, handleShow, show, logged
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <NewRecipeForm handleClose={handleClose} loggedInUser={loggedInUser} recipe={recipe}/>
+            <NewRecipeForm handleClose={handleClose} loggedInUser={loggedInUser} recipe={recipe} setRecipe={setRecipe}/>
           </Modal.Body>
         </Modal>
     )

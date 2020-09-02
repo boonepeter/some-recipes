@@ -27,7 +27,7 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
     history.push('/');
   }
     return (
-        <Navbar collapseOnSelect expand="lg" bg="light">
+        <Navbar  expand="lg" bg="light">
         <div className="container">
         <Navbar.Brand href="/">
           <img
@@ -38,7 +38,7 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
             className="d-inline-block align-top"  />{'   '}
           Some Recipes
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Toggle  aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Form inline className="ml-auto mr-auto" onSubmit={searchRecipes} style={{ marginLeft: "20px", marginRight: "20px", marginTop: "10px"}}>
             <FormControl 
@@ -51,7 +51,8 @@ const NavigationBar: React.FC<Props> = ({user, logout, showNewModal}: Props) => 
           <Nav className="ml-auto" >
             
             <Nav.Link href="/" active={useLocation().pathname === "/"}>Home</Nav.Link>
-            <Nav.Link href="/recipes" active={useLocation().pathname === "/recipes"}>Browse Recipes</Nav.Link>
+            
+            
             <Nav.Link href="/signup" style={hideLoggedIn} active={useLocation().pathname === "/signup"}>Sign Up</Nav.Link>
             <Nav.Link href="/login" style={hideLoggedIn} active={useLocation().pathname === "/login"}>Login</Nav.Link>
             {
