@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Navbar, Nav, Form, FormControl, Collapse } from 'react-bootstrap'
+import { Button, Navbar, Nav, Form, FormControl } from 'react-bootstrap'
 import { useLocation, useHistory } from 'react-router-dom';
 import { User } from '../types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

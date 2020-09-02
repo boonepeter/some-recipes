@@ -70,6 +70,7 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe, setR
       try {
         const host = new URL(e.target.value).hostname;
         setHostname(host);
+        console.log(hostName);
       } catch {
         setHostname('');
         setIsSupported(false);
@@ -110,6 +111,7 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe, setR
     if (e?.target?.files && e.target.files.length !== 0) {
         setImage(e.target.files[0].name);
         setImageFile(e.target.files[0]);
+        console.log(imageFile?.name);
     }
 }
 
