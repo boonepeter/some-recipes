@@ -1,4 +1,4 @@
-import { Recipe, WithContext, Class } from "schema-dts";
+import { Recipe, WithContext, Class, AnalysisNewsArticle } from "schema-dts";
 import { JSDOM } from "jsdom";
 import axios from "axios";
 import express from "express";
@@ -16,7 +16,8 @@ router.get("/", async (request, response) => {
         const doc = dom.window.document;
         const allData = doc.querySelectorAll('script[type="application/ld+json"]');
         for (let i = 0; i < allData.length; i++) {
-            let ld = JSON.parse(allData[i].text);
+            // TODO: don't cast to any
+            let ld = JSON.parse((allData[i] as any).text);
             console.log(ld);
             if (ld["@graph"]) {
                 console.log("has graph.");

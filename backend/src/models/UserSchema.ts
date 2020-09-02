@@ -1,6 +1,6 @@
 import uniqueValidator from 'mongoose-unique-validator';
 import {Document, model, Model, Schema} from 'mongoose';
-import { RecipeList, User } from "../types";
+import { User } from "../types";
 
 const UserSchema: Schema = new Schema({
   username: {
