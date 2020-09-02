@@ -10,6 +10,7 @@ env:
   NODE_VERSION: '12.x'                # set this to the node version to use
   SECRET: ${{ secrets.SECRET}}
   MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }} 
 
 jobs:
   build-and-deploy:
