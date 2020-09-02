@@ -42,8 +42,8 @@ const ProfileView: React.FC<Props> = ({ loggedInUser }: Props) => {
             form.append("profile", profilePic);
             const res = await axios.post(`${apiBaseUrl}/upload/profile/${user?.username}`, form);
             if (res.data) {
-                console.log(res.data);
-                setUser(res.data);
+                setProfilePic(undefined);
+                setShowEdit(false);
             }
         }
     }
@@ -66,7 +66,7 @@ const ProfileView: React.FC<Props> = ({ loggedInUser }: Props) => {
 
             <div>
                 {
-                    loggedInUser?.userId == user.userId ? 
+                    loggedInUser?.userId === user.userId ? 
                     <Button onClick={() => setShowEdit(!showEdit)} title="Change Picture" size="sm" variant="outline-primary" style={{ margin: "5px"}}>
                         <FontAwesomeIcon icon={faEdit} />
                     </Button>

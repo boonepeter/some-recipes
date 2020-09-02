@@ -33,7 +33,8 @@ export const updateRecipe = async (recipeId: string, recipe: Recipe, userId: str
 export const createRecipe = async (recipe: Recipe, userId: string) : Promise<Recipe | undefined> => {
     const user = await UserSchema.findById(userId);
     if (user) {
-        const newRecipe = new RecipeSchema({ recipe, user: user }).populate('user');
+        recipe.user = user;
+        const newRecipe = new RecipeSchema(recipe).populate('user');
         const saved = await newRecipe.save();
         return saved.toJSON();
     } else {

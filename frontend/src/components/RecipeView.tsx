@@ -63,7 +63,7 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
   const deleteRecipe = async () => {
     const windowRes = window.confirm('Are you sure you want to delete this recipe?');
     if (windowRes) {
-      const response = await axios.delete(`${apiBaseUrl}/recipes/${id}`, { data: { token: loggedInUser?.token }})
+      const response = await axios.delete(`${apiBaseUrl}/recipes/${id}`, { headers: {Authorization: "Bearer " + loggedInUser?.token}});
       if (response.status === 200) {
         history.push('/');
       }

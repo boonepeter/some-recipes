@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Button, Col, Row, Spinner, Image } from 'react-bootstrap';
 import axios from 'axios';
-import { apiBaseUrl, parseApiBaseUrl } from '../constants';
+import { apiBaseUrl } from '../constants';
 import { Recipe, User, NewRecipe } from '../types'
 import DynamicInput from './DynamicInput';
 import { useHistory } from 'react-router-dom';
@@ -30,7 +30,7 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe, setR
   const [prepTime, setPrepTime] = useState(recipe?.prepTime ? recipe.prepTime : 0);
   const [preheat, setPreheat] = useState(recipe?.preheat ? recipe.preheat : 0);
   const [author, setAuthor] = useState(recipe?.author ? recipe.author : '');
-  const [imageFile, setImageFile] = useState(null);
+  const [imageFile, setImageFile] = useState<File|undefined>(undefined);
 
   const newItem = (value: string): Item => {
     return { value: value, id: uuid() }
@@ -79,7 +79,7 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe, setR
 
   const handleImport = async () => {
     setIsImporting(true);
-    const recipe = await axios.get(`${parseApiBaseUrl}${link}`);
+    const recipe = await axios.get(`${apiBaseUrl}/parse?url=${link}`);
     if (recipe.status === 200 && recipe.data) {
       setIngredients(
         recipe?.data?.recipeIngredient ? 
@@ -106,9 +106,12 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe, setR
     setIsImporting(false);
   }
 
-  const handleImageChange = () => {
-    
-  }
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e?.target?.files && e.target.files.length !== 0) {
+        setImage(e.target.files[0].name);
+        setImageFile(e.target.files[0]);
+    }
+}
 
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
     const newRec: NewRecipe = {
@@ -131,10 +134,17 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe, setR
       event.preventDefault();
       event.stopPropagation();
       // TODO: add toast notification
+      //let form = new FormData();
+      //if (imageFile) {
+      //  form.append("image", imageFile);
+      //}
       if (recipe) {
         const response = await axios.put(`${apiBaseUrl}/recipes/${recipe.recipeId}`, {
-          recipe: newRec,
-          token: loggedInUser?.token
+          recipe: newRec
+        }, {
+          headers: {
+            Authorization: "Bearer " + loggedInUser?.token
+          }
         });
         if (response.data && setRecipe) {
           setRecipe(response.data);
@@ -191,9 +201,9 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe, setR
             </Col>
           </Row>
         </Form.Group>
-        <Form.Group>
+        <Form.Group >
           <Form.Label>Image</Form.Label>
-          <Form.File id="recipePicture" onChange={handleImageChange}/>
+          <Form.File disabled={true} id="recipePicture" onChange={handleImageChange}/>
           {
             image ? 
             <Image src={image} height="100px" style={{margin: "5px"}}/>

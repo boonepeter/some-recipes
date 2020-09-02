@@ -25,6 +25,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mongoose-unique-validator": "^1.0.4",
     "@types/multer": "^1.4.3",
+    "axios": "^0.20.0",
     "azure-storage": "^2.10.3",
     "bcrypt": "^4.0.1",
     "bcryptjs": "^2.4.3",
@@ -35,10 +36,12 @@
     "express-jwt": "^6.0.0",
     "into-stream": "^5.1.1",
     "jimp": "^0.14.0",
+    "jsdom": "^16.4.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.16",
     "mongoose-unique-validator": "^2.0.3",
     "multer": "^1.4.2",
+    "schema-dts": "^0.7.1",
     "uuid": "^8.0.0"
   },
   "scripts": {
