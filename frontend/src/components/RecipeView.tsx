@@ -23,12 +23,13 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
+
   React.useEffect(() => {
     const getRecipe = async () => {
       const response = await axios.get<Recipe>(`${apiBaseUrl}/recipes/${id}`);
       if (response.data) {
         setRecipe(response.data)
-        if (response.data.user?.id && loggedInUser?.id === response.data.user.id) {
+        if (response.data.user?.userId && loggedInUser?.userId === response.data.user.userId) {
           setCanEdit(true);
         }
       }
@@ -39,7 +40,7 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
   React.useEffect(() => {
     const favList = loggedInUser?.lists.find(l => l.title === "Favorites")
     if (favList) {
-      if (favList.recipes.find(r => r.id === id)) {
+      if (favList.recipes.find(r => r.recipeId === id)) {
         setIsSaved(true);
       }
     }
@@ -48,7 +49,7 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
   const saveRecipe = async () => {
     let list = loggedInUser?.lists.find(l => l.title === "Favorites");
     if (isSaved && list?.recipes) {
-      list.recipes = list?.recipes?.filter(r => r.id !== recipe?.id);
+      list.recipes = list?.recipes?.filter(r => r.recipeId !== recipe?.recipeId);
     }
     if (!isSaved && list?.recipes && recipe) {
       list.recipes = list.recipes.concat(recipe);
@@ -62,7 +63,7 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
   const deleteRecipe = async () => {
     const windowRes = window.confirm('Are you sure you want to delete this recipe?');
     if (windowRes) {
-      const response = await axios.delete(`${apiBaseUrl}/recipes/${id}`, { data: { token: loggedInUser?.token }})
+      const response = await axios.delete(`${apiBaseUrl}/recipes/${id}`, { headers: {Authorization: "Bearer " + loggedInUser?.token}});
       if (response.status === 200) {
         history.push('/');
       }
@@ -173,7 +174,7 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
         handleClose={handleClose} 
         handleShow={handleShow} 
         loggedInUser={loggedInUser}
-        recipe={recipe} />
+        recipe={recipe} setRecipe={setRecipe}/>
     </div>
   )
 }

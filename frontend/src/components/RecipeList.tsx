@@ -14,7 +14,7 @@ const RecipeList: React.FC<{ recipes: Recipe[] | null }> = ({ recipes }) => {
   return (
     <CardColumns style={{margin: "20px"}}>
         {recipes.map((r: Recipe) => (
-            <Preview key={r.id} recipe={r}/>
+            <Preview key={r.recipeId} recipe={r}/>
         ))}
     </CardColumns>
   )

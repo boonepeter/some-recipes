@@ -5,6 +5,9 @@ import listRouter from './controllers/listRouter';
 import userRouter from './controllers/userRouter';
 import loginRouter from './controllers/loginRouter';
 import searchRouter from './controllers/searchRouter';
+import uploadRouter from './controllers/uploadRouter';
+import parseRouter from "./controllers/parseRouter";
+
 import path from 'path';
 import config from './utils/config';
 require('express-async-errors')
@@ -39,7 +42,9 @@ app.use('/api/recipes', recipeRouter);
 app.use('/api/lists', listRouter);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
-app.use('/api/search', searchRouter)
+app.use('/api/search', searchRouter);
+app.use('/api/upload', uploadRouter);
+app.use('/api/parse', parseRouter);
 
 // send everything else to the frontend index
 app.get('/*', (_req, res) => {
