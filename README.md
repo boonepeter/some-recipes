@@ -1,6 +1,6 @@
 # some-recipes
 
-![.github/workflows/build_deploy_azure.yml](https://github.com/boonepeter/some-recipes/workflows/.github/workflows/build_deploy_azure.yml/badge.svg)
+[![build and deploy](https://github.com/boonepeter/some-recipes/actions/workflows/build_deploy_azure.yml/badge.svg)](https://github.com/boonepeter/some-recipes/actions/workflows/build_deploy_azure.yml)
 
 This site is hosted [here on Azure's Web App Service](https://some-recipes.azurewebsites.net/recipes) and uses GitHub Actions to build and deploy.
 
