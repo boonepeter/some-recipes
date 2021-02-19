@@ -1,4 +1,5 @@
 # This workflow will build and push a node.js application to an Azure Web App when a release is created.
+name: build and deploy
 
 on:
   push:
