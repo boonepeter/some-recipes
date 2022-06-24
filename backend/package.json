@@ -37,7 +37,7 @@
     "express-jwt": "^6.0.0",
     "into-stream": "^5.1.1",
     "jimp": "^0.14.0",
-    "jsdom": "^16.4.0",
+    "jsdom": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.16",
     "mongoose-unique-validator": "^2.0.3",
