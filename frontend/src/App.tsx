@@ -36,6 +36,19 @@ const App: React.FC = () => {
   }
 
   React.useEffect(() => {
+    const setWakeLock = async () =>{
+      const anyNav: any = navigator;
+      await anyNav.wakeLock.request('screen');
+    }
+    try {
+      setWakeLock();          
+    } catch (error) {
+      console.log('Wakelock not supported');
+      console.log(error);
+    }
+  }, [])
+
+  React.useEffect(() => {
     const token = localStorage.getItem('some-recipes-user-token');
     if (token) {
       const parsedUser = JSON.parse(token);
