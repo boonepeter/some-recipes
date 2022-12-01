@@ -17,13 +17,13 @@ searchRouter.get('/', async (request, response) => {
         switch (request.query.type.toString().toLowerCase()) {
             case "tag":
                 logger.info('tag', request.query.terms);
-                const recipes = await RecipeSchema.find({ tags: { "$in": terms } })
+                const recipes = await RecipeSchema.find({ tags: { "$in": terms } }).limit(50);
                 if (!recipes) { response.json(null) }
                 response.json(recipes);
                 break;
             case "title":
                 logger.info("title", request.query.terms);
-                const titleMatch = await RecipeSchema.find({ "title": { "$regex": request.query.terms as string, "$options": "i"}})
+                const titleMatch = await RecipeSchema.find({ "title": { "$regex": request.query.terms as string, "$options": "i"}}).limit(50);
                 response.json(titleMatch);
                 break;
             default:

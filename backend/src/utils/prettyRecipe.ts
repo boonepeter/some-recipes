@@ -1,4 +1,3 @@
-import { Recipe } from './../types';
 import {Recipe as RecipeSchema, HowToStep} from "schema-dts";
 
 const prettyRecipe = (recipe: RecipeSchema) => {

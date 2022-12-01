@@ -5,7 +5,7 @@ import axios from 'axios';
 import { apiBaseUrl } from '../constants';
 import { Badge, Button } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faEdit, faTrashAlt, faClipboardCheck, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons';
 import NewRecipe from './NewRecipe';
 
@@ -16,10 +16,11 @@ interface Props {
 const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
   const history = useHistory();
   const { id } = useParams<{id: string}>();
-  const [recipe, setRecipe] = React.useState<Recipe | null>(null);
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [canEdit, setCanEdit] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
+  const [wasCopied, setWasCopied ] = useState(false);
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
 
@@ -57,6 +58,13 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
     const response = await axios.put(`${apiBaseUrl}/lists/${list?.id}`, list);
     if (response.status === 200) {
       setIsSaved(!isSaved);
+    }
+  }
+
+  const copyToClipboard = async () => {
+    if (recipe) {
+      navigator.clipboard.writeText(recipe?.ingredients.join("\r\n"));
+      setWasCopied(true);
     }
   }
   
@@ -146,7 +154,18 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
         </div>
         : null
       }
-      <h4>Ingredients</h4>
+
+      <h4>
+        Ingredients
+        { ' ' }
+        <Button variant="btn btn-light btn-sm" title={wasCopied ? "Copied!" : "Copy to clipboard"} onClick={copyToClipboard}>
+          <FontAwesomeIcon icon={
+            wasCopied ? faClipboardCheck : faClipboardList
+          } />
+        </Button>
+
+
+      </h4>
       <ul>
       <div>
           {recipe.ingredients.map((i, index) => <li key={i + index}>{i}</li>)}

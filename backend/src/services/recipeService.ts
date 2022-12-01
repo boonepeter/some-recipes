@@ -3,7 +3,7 @@ import RecipeSchema from '../models/RecipeSchema';
 import UserSchema from '../models/UserSchema';
 
 export const getAllRecipes = async () : Promise<Recipe[]> => {
-    const recipe = await RecipeSchema.find({});
+    const recipe = await RecipeSchema.find({}).limit(50);
     return recipe.map(r => r.toJSON());
 }
 

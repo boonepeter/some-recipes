@@ -1,6 +1,5 @@
 import express from 'express';
 import RecipeListSchema from '../models/RecipeListSchema';
-import RecipeSchema from '../models/RecipeSchema'
 
 const listRouter = express.Router();
 
