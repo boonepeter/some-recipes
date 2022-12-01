@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faEdit, faTrashAlt, faClipboardCheck, faClipboardList } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as farHeart } from '@fortawesome/free-regular-svg-icons';
 import NewRecipe from './NewRecipe';
+// import parseIngredient from '../helper';
 
 interface Props {
   loggedInUser?: User|null|undefined;
@@ -61,9 +62,10 @@ const RecipeView: React.FC<Props> = ({ loggedInUser }: Props) => {
     }
   }
 
-  const copyToClipboard = async () => {
+  const copyToClipboard = () => {
     if (recipe) {
-      navigator.clipboard.writeText(recipe?.ingredients.join("\r\n"));
+      // let ings = recipe.ingredients.map(parseIngredient);
+      navigator.clipboard.writeText(recipe.ingredients.join("\r\n"));
       setWasCopied(true);
     }
   }
