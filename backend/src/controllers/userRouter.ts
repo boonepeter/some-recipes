@@ -35,8 +35,13 @@ userRouter.post('/', async (request, response) => {
         title: "Favorites",
         user: savedUser._id
     })
+    const uploadList = new RecipeListSchema({
+        title: "Uploads",
+        user: savedUser._id
+    });
     const savedList = await newList.save();
-    const found = await UserSchema.findByIdAndUpdate(savedUser._id, { lists: [ savedList._id ]}, { new: true });
+    const savedUploadList = await uploadList.save();
+    const found = await UserSchema.findByIdAndUpdate(savedUser._id, { lists: [ savedList._id, savedUploadList._id ]}, { new: true });
     if (!found) {
         response.status(404).end();
     }

@@ -17,7 +17,11 @@ const NewRecipeModal: React.FC<Props> = ({ handleClose, handleShow, show, logged
         <Modal size="lg" centered show={show} animation={false} onHide={handleClose} >
           <Modal.Header closeButton>
             <Modal.Title>
-              New Recipe
+              {
+                recipe ?
+                recipe.title
+                : "New Recipe"
+              }
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>

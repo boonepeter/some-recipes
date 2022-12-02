@@ -14,8 +14,8 @@ interface Props {
 const ProfileView: React.FC<Props> = ({ loggedInUser }: Props) => {
     const { username } = useParams<{username: string}>();
     const [ user, setUser ] = useState<User|undefined>(undefined);
-    const [profilePic, setProfilePic] = useState<File|undefined>(undefined);
-    const [showEdit, setShowEdit] = useState<boolean>(false);
+    const [ profilePic, setProfilePic ] = useState<File|undefined>(undefined);
+    const [ showEdit, setShowEdit ] = useState<boolean>(false);
 
     React.useEffect(() => {
         const findLists = async () => {
@@ -53,60 +53,73 @@ const ProfileView: React.FC<Props> = ({ loggedInUser }: Props) => {
             <div>Profile</div>
         )
     }
-
     return (
-        <div >
-            <div className="d-flex flex-row " style={{ marginTop: 40}}>
-                {
-                user.profilePicUrl ? 
-                        <Image src={`${blobBaseUrl}/pics/${user.username}/profile.png`} rounded height="200px"/>
+        <div className="container">
+            <div className="row" >
+                <div className='col sm auto' style={{maxWidth:'180px'}}>
+                  <div className='row' style={{display: 'grid'}}>
+                    <div style={{gridColumn: 1, gridRow: 1}}>
+
+                    {
+                        user.profilePicUrl ? 
+                        <Image src={`${blobBaseUrl}/pics/${user.username}/profile.png`} style={{borderRadius: "50%"}} height="175px"/>
                         :
                         <FontAwesomeIcon icon={faUserCircle} size="10x"/>
                     }
-
-            <div>
-                {
-                    loggedInUser?.userId === user.userId ? 
-                    <Button onClick={() => setShowEdit(!showEdit)} title="Change Picture" size="sm" variant="outline-primary" style={{ margin: "5px"}}>
-                        <FontAwesomeIcon icon={faEdit} />
-                    </Button>
-                    : null
-                }        
-                {
+                    </div>
+                    <div className='layer1' style={{gridColumn: 1, gridRow: 1, alignSelf: 'end'}}>
+                    {
+                        loggedInUser?.userId === user.userId ? 
+                        <Button onClick={() => setShowEdit(!showEdit)} title="Change Picture" size="sm" variant="light">
+                            <FontAwesomeIcon icon={faEdit} />
+                        </Button>
+                        : null
+                    }
+                    </div>
+                  </div>
+                </div>
+                <div className='col align-self-end'>
+                  <h3 className="mt-auto">{user.name}</h3>
+                </div>
+            </div>
+            <div className='row'>
+              {
                 loggedInUser?.userId === user.userId && showEdit ? 
                 <div>
-                    <input type="file" onChange={handleImageChange} />
-                    <Button onClick={handleUpload}>Submit</Button>
+                  <input type="file" onChange={handleImageChange} />
+                  {
+                    profilePic ?
+                      <Button size='sm' onClick={handleUpload}>Save</Button>
+                      : null
+                  }
                 </div>
                 : null
-                }
+              }
 
-                <h3 className="mt-auto">{user.name}</h3>
             </div>
-            </div>
-            {
+            <div className='row'>
+              {
                 user.lists?.map((l, index) =>
-                    l.recipes && l.recipes.length > 0 ?
-                    <div style={{ margin: "20px"}} key={l.title + index}>
-                        <h4>{l.title}</h4>
-                        <ListGroup>
-                            {
-                                l.recipes?.map((r, rIndex) => 
-                                    <ListGroup.Item key={r.recipeId + rIndex}>
-                                        <Link to={`/recipes/${r.recipeId}`} >
-                                            {r.title}
-                                        </Link>
-                                    </ListGroup.Item>)
-                            }
-                        </ListGroup>
-                        
-                    </div>
-                    : null
-                    )
-            }
+                  l.recipes && l.recipes.length > 0 ?
+                  <div style={{ margin: "20px"}} key={l.title + index}>
+                    <h4>{l.title}</h4>
+                    <ListGroup>
+                        {
+                        l.recipes?.map((r, rIndex) => 
+                            <ListGroup.Item key={r.recipeId + rIndex}>
+                            <Link to={`/recipes/${r.recipeId}`} >
+                                {r.title}
+                            </Link>
+                            </ListGroup.Item>)
+                        }
+                    </ListGroup>
+                  </div>
+                  : null
+                )
+              }
+            </div>
         </div>
     )
-  
 }
 
 export default ProfileView
