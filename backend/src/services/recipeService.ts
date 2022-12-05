@@ -1,6 +1,8 @@
 import { Recipe } from "../types";
 import RecipeSchema from '../models/RecipeSchema';
 import UserSchema from '../models/UserSchema';
+import { addRecipeToList } from "./listService";
+import RecipeList from "../models/RecipeListSchema";
 
 export const getAllRecipes = async () : Promise<Recipe[]> => {
     const recipe = await RecipeSchema.find({}).limit(50);
@@ -36,6 +38,11 @@ export const createRecipe = async (recipe: Recipe, userId: string) : Promise<Rec
         recipe.user = user;
         const newRecipe = new RecipeSchema(recipe).populate('user');
         const saved = await newRecipe.save();
+        const uploads = await RecipeList.findOne({'user': user._id, 'title': 'Uploads'});
+        console.log(uploads);
+        if (uploads) {
+            addRecipeToList(saved._id, uploads._id);
+        }
         return saved.toJSON();
     } else {
         return undefined;

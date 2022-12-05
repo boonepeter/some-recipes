@@ -116,6 +116,10 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe, setR
 }
 
   const handleSubmit = async (event: React.FormEvent<EventTarget>) => {
+    let shallowUser = loggedInUser ? loggedInUser : undefined;
+    if (shallowUser) {
+      shallowUser.lists = [];
+    }
     const newRec: NewRecipe = {
         ingredients: ingredients.flatMap(i => i.value === "" ? [] : i.value),
         title: title,
@@ -126,7 +130,7 @@ const NewRecipeForm: React.FC<Props> = ({handleClose, loggedInUser, recipe, setR
         notes: notes.flatMap(n => n.value === "" ? [] : n.value),
         link: link,
         userId: loggedInUser ? loggedInUser.userId : undefined,
-        user: loggedInUser ? loggedInUser : undefined,
+        user: shallowUser,
         imageURL: image === "" ? undefined : image,
         author: author,
         prepTime: prepTime,
